@@ -4,10 +4,18 @@ import lombok.Data;
 
 import java.io.Serializable;
 
+/**
+ * @author shuai   b
+ * @description 通用返回格式类
+ * @createDate 2022-11-02 17:50:00
+ */
 @Data
 public class Result implements Serializable {
+    //状态码
     public int code;
+    //返回信息
     public String msg;
+    //返回的数据
     public Object data;
 
     public static Result success() {

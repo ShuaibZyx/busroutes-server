@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.shuaib.mapper.BusMapper">
+<mapper namespace="com.shuaib.mapper.BusesMapper">
 
-    <resultMap id="BaseResultMap" type="com.shuaib.bean.Bus">
+    <resultMap id="BaseResultMap" type="com.shuaib.bean.Buses">
             <id property="busId" column="bus_id" jdbcType="BIGINT"/>
             <result property="busName" column="bus_name" jdbcType="VARCHAR"/>
             <result property="cityCode" column="city_code" jdbcType="VARCHAR"/>

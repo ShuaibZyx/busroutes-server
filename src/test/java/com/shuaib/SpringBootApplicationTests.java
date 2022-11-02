@@ -16,7 +16,7 @@ class SpringBootApplicationTests {
     void contextLoads() {
         UserAccount userAccount = new UserAccount();
         userAccount.setAccount("15024930879");
-        userAccount.setAvailable(1);
+        userAccount.setAvailable(true);
         userAccount.setPassword("123456");
         userAccountMapper.insert(userAccount);
     }

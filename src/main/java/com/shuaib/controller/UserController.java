@@ -17,7 +17,7 @@ import javax.annotation.Resource;
 
 @RestController
 @RequestMapping("/user")
-public class UserAccountController {
+public class UserController {
 
     @Autowired
     private UserAccountService userAccountService;
@@ -40,6 +40,7 @@ public class UserAccountController {
         UserInfo userInfo = userAccount.getUserInfo();
         userInfo.setUserId(userAccount.getUserId());
         userInfo.setNickname("自由蝶");
+        userInfo.setTelephone(userAccount.getAccount());
         userInfoService.save(userInfo);
         return Result.success("注册成功");
     }
@@ -89,7 +90,7 @@ public class UserAccountController {
     }
 
     /**
-     * 添加一个用户
+     * 添加一个用户(管理员)
      * @param userAccount 用户对象实体，包含用户基本信息与附加信息
      * @return 通用返回格式
      */
