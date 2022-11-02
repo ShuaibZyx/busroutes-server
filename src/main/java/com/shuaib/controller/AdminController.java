@@ -38,10 +38,10 @@ public class AdminController {
         if (!password.equals(admin.getPassword())) return Result.error("密码错误");
         // 这里把userId转为String类型，实际开发中如果subject需要存userId，则可以JwtConfig的createToken方法的参数设置为Long类型
         String token = jwtConfig.createToken(admin.getAdminId().toString());
-        String userId = jwtConfig.getUserIdFromToken(token);
+        String adminId = jwtConfig.getUserIdFromToken(token);
         if (!StringUtils.isEmpty(token)) {
             json.set("token", token);
-            json.set("userId", userId);
+            json.set("adminId", adminId);
         }
         return Result.success(json);
     }

@@ -2,12 +2,14 @@ package com.shuaib.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.shuaib.bean.Files;
-import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.util.List;
 
-@Service
+/**
+ * @author shuai   b
+ * @description 针对表【files】的数据库操作Service
+ * @createDate 2022-11-02 14:04:47
+ */
 public interface FilesService extends IService<Files> {
     /**
      * 上传单个文件接口
