@@ -83,8 +83,8 @@ public class UserAccountController {
      * @param userId 用户编号
      * @return 通用返回格式
      */
-    @GetMapping("/info")
-    public Result getUserInfoById(Long userId) {
+    @GetMapping("/info/{userId}")
+    public Result getUserInfoById(@PathVariable("userId") Long userId) {
         return Result.success(userInfoService.getById(userId));
     }
 
@@ -94,8 +94,8 @@ public class UserAccountController {
      * @return 通用返回格式
      */
     @Transactional
-    @PostMapping("/add")
-    public Result addUser(@RequestBody UserAccount userAccount){
+    @PostMapping("/create")
+    public Result createUser(@RequestBody UserAccount userAccount){
         userAccountService.save(userAccount);
         userInfoService.save(userAccount.getUserInfo());
         return Result.success("添加用户成功");
@@ -106,8 +106,8 @@ public class UserAccountController {
      * @param userId 用户编号
      * @return 通用返回格式
      */
-    @PostMapping("/delete")
-    public Result deleteUser(Long userId){
+    @DeleteMapping("/remove/{userId}")
+    public Result removeUser(@PathVariable("userId") Long userId){
         userAccountService.removeById(userId);
         return Result.success("删除用户成功");
     }
@@ -118,7 +118,7 @@ public class UserAccountController {
      * @return 通用返回格式
      */
     @PostMapping("/update")
-    public Result updateUser(UserInfo userInfo){
+    public Result updateUser(@RequestBody UserInfo userInfo){
         userInfoService.updateById(userInfo);
         return Result.success("更新用户信息成功");
     }
@@ -128,8 +128,8 @@ public class UserAccountController {
      * @param userAccount 用户账号实体
      * @return 通用返回格式
      */
-    @PostMapping("/verifyPassword")
-    public Result verifyUserPassword(UserAccount userAccount){
+    @PostMapping("/verify/password")
+    public Result verifyUserPassword(@RequestBody UserAccount userAccount){
         String password = userAccountService.getById(userAccount).getPassword();
         if (password.equals(userAccount.getPassword())) return Result.success(true);
         else return Result.success(false);
@@ -140,8 +140,8 @@ public class UserAccountController {
      * @param userAccount 用户账号实体
      * @return 通用返回格式
      */
-    @PostMapping("/password")
-    public Result modifyPassword(UserAccount userAccount){
+    @PostMapping("/modify/password")
+    public Result modifyPassword(@RequestBody UserAccount userAccount){
         userAccountService.updateById(userAccount);
         return Result.success("修改密码成功");
     }

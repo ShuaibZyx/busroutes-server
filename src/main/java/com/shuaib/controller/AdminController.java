@@ -11,6 +11,7 @@ import com.shuaib.service.AdminService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+
 import javax.annotation.Resource;
 
 @RestController
@@ -24,7 +25,8 @@ public class AdminController {
 
     /**
      * 管理员登录接口
-     * @param account 管理员账号
+     *
+     * @param account  管理员账号
      * @param password 管理员密码
      * @return 通用返回格式
      */
@@ -49,46 +51,50 @@ public class AdminController {
     /**
      * 分页获取普通管理员信息列表
      * @param currentPage 当前页码
-     * @param pageSize 页面大小
+     * @param pageSize    页面大小
      * @return 通用返回格式
      */
     @GetMapping("/list")
-    public Result getAdminListPage(int currentPage, int pageSize){
+    public Result getAdminListPage(int currentPage, int pageSize) {
         QueryWrapper<Admin> queryWrapper = new QueryWrapper<>();
         queryWrapper.ne("admin_id", "666666666");
-        return Result.success(adminService.getBaseMapper().selectPage(new Page<>(currentPage, pageSize), queryWrapper).getRecords());
+        Page<Admin> page = new Page<>(currentPage, pageSize);
+        return Result.success(adminService.getBaseMapper().selectPage(page, queryWrapper).getRecords());
     }
 
     /**
      * 创建一个管理员
+     *
      * @param admin 管理员实体
      * @return 通用返回格式
      */
-    @PostMapping("/add")
-    public Result addAdmin(@RequestBody Admin admin){
+    @PostMapping("/create")
+    public Result createAdmin(@RequestBody Admin admin) {
         adminService.save(admin);
         return Result.success("创建管理员成功");
     }
 
     /**
      * 删除一个管理员
+     *
      * @param adminId 管理员编号
      * @return 通用返回格式
      */
-    @PostMapping("/delete")
-    public Result deleteAdmin(Long adminId){
+    @PostMapping("/remove")
+    public Result removeAdmin(Long adminId) {
         adminService.removeById(adminId);
         return Result.success("删除管理员成功");
     }
 
     /**
      * 普通管理员自己修改密码
-     * @param adminId 管理员编号
+     *
+     * @param adminId     管理员编号
      * @param oldPassword 原密码
      * @param newPassword 新密码
      * @return 通用返回格式
      */
-    @PostMapping("/password")
+    @PostMapping("/modify/password")
     public Result modifyPassword(Long adminId, String oldPassword, String newPassword) {
         Admin admin = adminService.getById(adminId);
         if (admin == null) return Result.error("账号不存在");
@@ -100,10 +106,11 @@ public class AdminController {
 
     /**
      * 修改管理员电话号码
+     *
      * @param admin 管理员实体
      * @return 通用返回格式
      */
-    @PostMapping("/phone")
+    @PostMapping("/modify/phone")
     public Result modifyTelephone(@RequestBody Admin admin) {
         adminService.updateById(admin);
         return Result.success("修改电话号码成功");
@@ -111,22 +118,24 @@ public class AdminController {
 
     /**
      * 超级管理员修改普通管理员用户权限
+     *
      * @param admin 管理员实体
      * @return 通用返回格式
      */
-    @PostMapping("/role")
-    public Result modifyRole(@RequestBody Admin admin){
+    @PostMapping("/modify/role")
+    public Result modifyRole(@RequestBody Admin admin) {
         adminService.updateById(admin);
-        return  Result.success("修改权限成功");
+        return Result.success("修改权限成功");
     }
 
     /**
      * 超级管理员重置普通管理员密码
+     *
      * @param admin 管理员实体
      * @return 通用返回格式
      */
-    @PostMapping("password/reset")
-    public Result resetPassword(@RequestBody Admin admin){
+    @PostMapping("/reset/password")
+    public Result resetPassword(@RequestBody Admin admin) {
         admin.setPassword("absolutelyShuaib");
         return Result.success("重置密码成功");
     }

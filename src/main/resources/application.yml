@@ -3,9 +3,9 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/busroutes?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&serverTimezone=GMT%2b8
-    username: root
-    password: 123456
+    url: jdbc:mysql://101.42.172.82:3306/busroutes?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&serverTimezone=GMT%2b8
+    username: busroutes
+    password: absolutelyshuaib
   application:
     name: SpringBootApplication
   servlet:
@@ -14,6 +14,8 @@ spring:
       max-file-size: 200MB
   resources:
     static-locations: classpath:static/
+  jpa:
+    open-in-view: false
 
 logging:
   level:
