@@ -1,0 +1,39 @@
+server:
+  port: 8081
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/busroutes?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true&serverTimezone=GMT%2b8
+    username: root
+    password: 123456
+  application:
+    name: SpringBootApplication
+  servlet:
+    multipart:
+      max-request-size: 1GB
+      max-file-size: 200MB
+  resources:
+    static-locations: classpath:static/
+
+logging:
+  level:
+    root: warn
+    com.mp.first_mp.dao: trace
+    org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping: trace
+  pattern:
+    console: '%p%m%n'
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+config:
+  jwt:
+    # 加密密钥
+    secret: absolutelyshuaib
+    # token有效时长
+    expire: 604800
+    # header 名称
+    header: token
+
+

@@ -1,0 +1,29 @@
+{
+  "properties": [
+    {
+      "name": "mybatis-plus.configuration.mapper-locations",
+      "type": "java.lang.String",
+      "description": "Description for mybatis-plus.configuration.mapper-locations."
+    },
+    {
+      "name": "management.endpoints.web.exposure",
+      "type": "java.lang.String",
+      "description": "Description for management.endpoints.web.exposure."
+    },
+    {
+      "name": "shuaib.jwt.header",
+      "type": "java.lang.String",
+      "description": "Description for shuaib.jwt.header."
+    },
+    {
+      "name": "shuaib.jwt.expire",
+      "type": "java.lang.String",
+      "description": "Description for shuaib.jwt.expire."
+    },
+    {
+      "name": "shuaib.jwt.secret",
+      "type": "java.lang.String",
+      "description": "Description for shuaib.jwt.secret."
+    }
+  ]
+}
