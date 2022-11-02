@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shuaib.mapper.RoutesMapper">
+
+    <resultMap id="BaseResultMap" type="com.shuaib.bean.Routes">
+            <id property="routeId" column="route_id" jdbcType="BIGINT"/>
+            <result property="busId" column="bus_id" jdbcType="BIGINT"/>
+            <result property="startSequence" column="start_sequence" jdbcType="TINYINT"/>
+            <result property="endSequence" column="end_sequence" jdbcType="TINYINT"/>
+            <result property="cost" column="cost" jdbcType="DOUBLE"/>
+            <result property="timeRange" column="time_range" jdbcType="VARCHAR"/>
+            <result property="interval" column="interval" jdbcType="TINYINT"/>
+            <result property="isNight" column="is_night" jdbcType="TINYINT"/>
+            <result property="isCircle" column="is_circle" jdbcType="TINYINT"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        route_id,bus_id,start_sequence,
+        end_sequence,cost,time_range,
+        interval,is_night,is_circle,
+        create_time,update_time
+    </sql>
+</mapper>

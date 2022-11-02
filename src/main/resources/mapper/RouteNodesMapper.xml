@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.shuaib.mapper.RouteNodesMapper">
+
+    <resultMap id="BaseResultMap" type="com.shuaib.bean.RouteNodes">
+            <id property="routeNodeId" column="route_node_id" jdbcType="BIGINT"/>
+            <result property="routeId" column="route_id" jdbcType="BIGINT"/>
+            <result property="stationId" column="station_id" jdbcType="BIGINT"/>
+            <result property="nextStationId" column="next_station_id" jdbcType="BIGINT"/>
+            <result property="distance" column="distance" jdbcType="DOUBLE"/>
+            <result property="sequence" column="sequence" jdbcType="SMALLINT"/>
+            <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        route_node_id,route_id,station_id,
+        next_station_id,distance,sequence,
+        create_time,update_time
+    </sql>
+</mapper>
