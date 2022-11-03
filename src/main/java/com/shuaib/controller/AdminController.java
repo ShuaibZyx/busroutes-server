@@ -57,7 +57,7 @@ public class AdminController {
     @GetMapping("/list")
     public Result getAdminListPage(int currentPage, int pageSize) {
         QueryWrapper<Admin> queryWrapper = new QueryWrapper<>();
-        queryWrapper.ne("admin_id", "666666666");
+        queryWrapper.ne("admin_id", "666666666").orderByDesc("create_time");
         Page<Admin> page = new Page<>(currentPage, pageSize);
         return Result.success(adminService.getBaseMapper().selectPage(page, queryWrapper).getRecords());
     }
@@ -80,8 +80,8 @@ public class AdminController {
      * @param adminId 管理员编号
      * @return 通用返回格式
      */
-    @PostMapping("/remove")
-    public Result removeAdmin(Long adminId) {
+    @DeleteMapping("/remove/{adminId}")
+    public Result removeAdminById(@PathVariable("adminId") Long adminId) {
         adminService.removeById(adminId);
         return Result.success("删除管理员成功");
     }

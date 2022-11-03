@@ -17,7 +17,7 @@ import org.apache.ibatis.annotations.*;
 @Mapper
 public interface UserAccountMapper extends BaseMapper<UserAccount> {
 
-    @Select("select * from user_account")
+    @Select("select * from user_account order by create_time desc")
     @Results({
             @Result(column = "user_id", property = "userId", id = true),
             @Result(column = "user_id", property = "userInfo", javaType = UserInfo.class,

@@ -30,12 +30,13 @@ public class UserController {
 
     /**
      * 用户注册方法
+     *
      * @param userAccount 用户账户实体
      * @return 通用返回格式
      */
     @Transactional
     @PostMapping("/register")
-    public Result register(UserAccount userAccount){
+    public Result register(UserAccount userAccount) {
         userAccountService.save(userAccount);
         UserInfo userInfo = userAccount.getUserInfo();
         userInfo.setUserId(userAccount.getUserId());
@@ -47,7 +48,8 @@ public class UserController {
 
     /**
      * 用户登录接口
-     * @param account 用户登录账号
+     *
+     * @param account  用户登录账号
      * @param password 用户登录密码
      * @return 通用返回格式
      */
@@ -57,7 +59,8 @@ public class UserController {
         QueryWrapper<UserAccount> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("account", account);
         UserAccount userAccount = userAccountService.getBaseMapper().selectOne(queryWrapper);
-        if (userAccount == null) return Result.error("账号不存在,请注册");
+        if (userAccount == null) return Result.error("账号不存在,请先注册");
+        if (!userAccount.getAvailable()) return Result.error("账号已冻结,如需继续使用请联系管理员");
         if (!password.equals(userAccount.getPassword())) return Result.error("密码错误");
         String token = jwtConfig.createToken(userAccount.getUserId().toString());
         String userId = jwtConfig.getUserIdFromToken(token);
@@ -69,9 +72,10 @@ public class UserController {
     }
 
     /**
-     分页获取用户信息列表
+     * 分页获取用户信息列表
+     *
      * @param currentPage 当前页码
-     * @param pageSize 页面大小
+     * @param pageSize    页面大小
      * @return 通用返回格式
      */
     @GetMapping("/list")
@@ -81,6 +85,7 @@ public class UserController {
 
     /**
      * 根据Id获取用户
+     *
      * @param userId 用户编号
      * @return 通用返回格式
      */
@@ -91,12 +96,13 @@ public class UserController {
 
     /**
      * 添加一个用户(管理员)
+     *
      * @param userAccount 用户对象实体，包含用户基本信息与附加信息
      * @return 通用返回格式
      */
     @Transactional
     @PostMapping("/create")
-    public Result createUser(@RequestBody UserAccount userAccount){
+    public Result createUser(@RequestBody UserAccount userAccount) {
         userAccountService.save(userAccount);
         userInfoService.save(userAccount.getUserInfo());
         return Result.success("添加用户成功");
@@ -104,33 +110,36 @@ public class UserController {
 
     /**
      * 删除用户
+     *
      * @param userId 用户编号
      * @return 通用返回格式
      */
     @DeleteMapping("/remove/{userId}")
-    public Result removeUser(@PathVariable("userId") Long userId){
+    public Result removeUserById(@PathVariable("userId") Long userId) {
         userAccountService.removeById(userId);
         return Result.success("删除用户成功");
     }
 
     /**
      * 更新用户信息
+     *
      * @param userInfo 用户附加信息实体
      * @return 通用返回格式
      */
     @PostMapping("/update")
-    public Result updateUser(@RequestBody UserInfo userInfo){
+    public Result updateUser(@RequestBody UserInfo userInfo) {
         userInfoService.updateById(userInfo);
         return Result.success("更新用户信息成功");
     }
 
     /**
      * 验证用户密码是否正确
+     *
      * @param userAccount 用户账号实体
      * @return 通用返回格式
      */
     @PostMapping("/verify/password")
-    public Result verifyUserPassword(@RequestBody UserAccount userAccount){
+    public Result verifyUserPassword(@RequestBody UserAccount userAccount) {
         String password = userAccountService.getById(userAccount).getPassword();
         if (password.equals(userAccount.getPassword())) return Result.success(true);
         else return Result.success(false);
@@ -138,11 +147,12 @@ public class UserController {
 
     /**
      * 修改密码
+     *
      * @param userAccount 用户账号实体
      * @return 通用返回格式
      */
     @PostMapping("/modify/password")
-    public Result modifyPassword(@RequestBody UserAccount userAccount){
+    public Result modifyPassword(@RequestBody UserAccount userAccount) {
         userAccountService.updateById(userAccount);
         return Result.success("修改密码成功");
     }

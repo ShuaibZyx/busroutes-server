@@ -22,11 +22,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @TableName("notice_reads")
 public class NoticeReads extends Model<NoticeReads> implements Serializable {
-    //公告阅读记录编号(雪花算法)
-    @TableId(type = IdType.ASSIGN_ID)
-    private Long noticeReadId;
 
-    //公告编号(外键-->(notices:notice_id))
+    //公告记录编号(外键-->(notices:notice_id))
+    @TableId(type = IdType.ASSIGN_ID)
     private Long noticeId;
 
     //用户编号(外键-->(user_account:user_id))

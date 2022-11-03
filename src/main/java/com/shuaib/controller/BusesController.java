@@ -6,10 +6,9 @@ import com.shuaib.bean.Buses;
 import com.shuaib.common.Result;
 import com.shuaib.service.BusesService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RestController
 @RequestMapping("/bus")
 public class BusesController {
 
@@ -25,7 +24,7 @@ public class BusesController {
      */
     @GetMapping("/list")
     public Result getBusListPage(int currentPage, int pageSize) {
-        return Result.success(busesService.getBaseMapper().selectPage(new Page<>(currentPage, pageSize), new QueryWrapper<>()).getRecords());
+        return Result.success(busesService.getBaseMapper().selectPage(new Page<>(currentPage, pageSize), new QueryWrapper<Buses>().orderByDesc("create_time")).getRecords());
     }
 
     /**
@@ -45,7 +44,7 @@ public class BusesController {
      * @return 通用返回格式
      */
     @DeleteMapping("/remove/{busId}")
-    public Result removeBus(@PathVariable("busId") Long busId) {
+    public Result removeBusById(@PathVariable("busId") Long busId) {
         busesService.removeById(busId);
         return Result.success("删除公交信息成功");
     }
