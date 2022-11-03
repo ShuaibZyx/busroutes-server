@@ -24,7 +24,7 @@ public interface RoutesMapper extends BaseMapper<Routes> {
     @Results({
             @Result(column = "route_id", property = "routeId", id = true),
             @Result(column = "route_id", property = "routeNodeList", javaType = List.class,
-                    one = @One(select = "com.shuaib.mapper.RouteNodesMapper.selectById")),
+                    many = @Many(select = "com.shuaib.mapper.RouteNodesMapper.getRouteNodeInfoByRouteId")),
             @Result(column = "bus_id", property = "busId"),
             @Result(column = "bus_id", property = "bus", javaType = Buses.class,
                     one = @One(select = "com.shuaib.mapper.BusesMapper.selectById"))

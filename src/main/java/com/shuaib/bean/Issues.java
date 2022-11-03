@@ -27,7 +27,7 @@ public class Issues extends Model<Issues> implements Serializable {
     private Long issueId;
 
     //留言创建者编号(外键-->(user_account:user_id))
-    private Long createrId;
+    private Long createId;
 
     //留言者(用户)信息
     @TableField(exist = false)

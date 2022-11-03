@@ -64,6 +64,6 @@ public class RoutesController {
 
     @GetMapping("/info/{routeId}")
     public Result getRouteInfoById(@PathVariable("routeId") Long routeId){
-        return null;
+        return Result.success(routesService.getRouteInfoById(routeId));
     }
 }

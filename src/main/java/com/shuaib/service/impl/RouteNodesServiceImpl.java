@@ -25,7 +25,7 @@ public class RouteNodesServiceImpl extends ServiceImpl<RouteNodesMapper, RouteNo
      */
     @Override
     public RouteNodes getRouteNodeInfoById(Long routeNodeId) {
-        return routeNodesMapper.getRouteNodeInfoById(routeNodeId);
+        return routeNodesMapper.getRouteNodeInfoByRouteNodeId(routeNodeId);
     }
 }
 

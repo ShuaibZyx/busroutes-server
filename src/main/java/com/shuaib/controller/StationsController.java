@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/station")
 public class StationsController {
-
     @Autowired
     private StationsService stationsService;
 
