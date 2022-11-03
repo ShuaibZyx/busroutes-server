@@ -31,7 +31,7 @@ public class AdminController {
      * @return 通用返回格式
      */
     @PostMapping("/login")
-    public Result adminLogin(String account, String password) {
+    public Result adminLogin( String account, String password) {
         JSONObject json = new JSONObject();
         QueryWrapper<Admin> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("account", account);

@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@TableName("station")
+@TableName("stations")
 public class Stations extends Model<Stations> implements Serializable {
     //站点信息编号(雪花算法)
     @TableId(type = IdType.ASSIGN_ID)
