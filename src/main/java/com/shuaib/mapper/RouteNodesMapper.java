@@ -2,16 +2,36 @@ package com.shuaib.mapper;
 
 import com.shuaib.bean.RouteNodes;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.ibatis.annotations.Mapper;
+import com.shuaib.bean.Stations;
+import org.apache.ibatis.annotations.*;
+
 
 /**
-* @author shuai   b
-* @description 针对表【route_nodes】的数据库操作Mapper
-* @createDate 2022-11-02 14:04:47
-* @Entity com.shuaib.bean.RouteNodes
-*/
+ * @author shuai   b
+ * @description 针对表【route_nodes】的数据库操作Mapper
+ * @createDate 2022-11-02 14:04:47
+ * @Entity com.shuaib.bean.RouteNodes
+ */
 @Mapper
 public interface RouteNodesMapper extends BaseMapper<RouteNodes> {
+
+    /**
+     * 获取一个节点信息(附加节点中站点信息)
+     * @param routeNodeId 节点编号
+     * @return 节点对象
+     */
+    @Select("select * from route_nodes where route_node_id = #{routeNodeId}")
+    @Results({
+            @Result(column = "station_id", property = "stationId"),
+            @Result(column = "station_id", property = "currentStation", javaType = Stations.class,
+                    one = @One(select = "com.shuaib.mapper.StationsMapper.selectById")
+            ),
+            @Result(column = "next_station_id", property = "nextStationId"),
+            @Result(column = "nextStationId", property = "nextStation", javaType = Stations.class,
+                    one = @One(select = "com.shuaib.mapper.StationsMapper.selectById")
+            )
+    })
+    RouteNodes getRouteNodeInfoById(Long routeNodeId);
 
 }
 

@@ -2,6 +2,7 @@ package com.shuaib.controller;
 
 import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.shuaib.common.jwt.JwtConfig;
 import com.shuaib.bean.UserAccount;
 import com.shuaib.bean.UserInfo;
@@ -12,8 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
-
 import javax.annotation.Resource;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/user")
@@ -30,25 +31,27 @@ public class UserController {
 
     /**
      * 用户注册方法
-     *
-     * @param userAccount 用户账户实体
+     * @param userAccount 用户账户对象
      * @return 通用返回格式
      */
     @Transactional
     @PostMapping("/register")
-    public Result register(UserAccount userAccount) {
+    public Result register(@RequestBody UserAccount userAccount) {
         userAccountService.save(userAccount);
-        UserInfo userInfo = userAccount.getUserInfo();
-        userInfo.setUserId(userAccount.getUserId());
+        //获取创建的用户编号
+        Long userId = userAccountService.getOne(new QueryWrapper<UserAccount>().eq("account", userAccount.getAccount())).getUserId();
+        //创建附加信息对象并填入数据
+        UserInfo userInfo = new UserInfo();
+        userInfo.setUserId(userId);
         userInfo.setNickname("自由蝶");
         userInfo.setTelephone(userAccount.getAccount());
+        //存入数据库
         userInfoService.save(userInfo);
         return Result.success("注册成功");
     }
 
     /**
      * 用户登录接口
-     *
      * @param account  用户登录账号
      * @param password 用户登录密码
      * @return 通用返回格式
@@ -73,7 +76,6 @@ public class UserController {
 
     /**
      * 分页获取用户信息列表
-     *
      * @param currentPage 当前页码
      * @param pageSize    页面大小
      * @return 通用返回格式
@@ -85,7 +87,6 @@ public class UserController {
 
     /**
      * 根据Id获取用户
-     *
      * @param userId 用户编号
      * @return 通用返回格式
      */
@@ -95,22 +96,32 @@ public class UserController {
     }
 
     /**
-     * 添加一个用户(管理员)
-     *
-     * @param userAccount 用户对象实体，包含用户基本信息与附加信息
+     * 添加一个用户(管理员调用)
+     * @param accountObj 用户账号(电话号码)
      * @return 通用返回格式
      */
     @Transactional
     @PostMapping("/create")
-    public Result createUser(@RequestBody UserAccount userAccount) {
+    public Result createUser(@RequestBody JSONObject accountObj) {
+        String account = accountObj.getStr("account");
+        //创建用户账户对象并随机生成密码填入
+        UserAccount userAccount = new UserAccount();
+        userAccount.setAccount(account);
+        userAccount.setPassword(UUID.randomUUID().toString().replace("-", "").substring(0, 8));
+        userAccount.setAvailable(false);
         userAccountService.save(userAccount);
-        userInfoService.save(userAccount.getUserInfo());
+        //获取创建的用户编号
+        Long userId = userAccountService.getOne(new QueryWrapper<UserAccount>().eq("account", userAccount.getAccount())).getUserId();
+        UserInfo userInfo = new UserInfo();
+        userInfo.setUserId(userId);
+        userInfo.setTelephone(account);
+        userInfo.setNickname("自由蝶");
+        userInfoService.save(userInfo);
         return Result.success("添加用户成功");
     }
 
     /**
      * 删除用户
-     *
      * @param userId 用户编号
      * @return 通用返回格式
      */
@@ -122,7 +133,6 @@ public class UserController {
 
     /**
      * 更新用户信息
-     *
      * @param userInfo 用户附加信息实体
      * @return 通用返回格式
      */
@@ -134,7 +144,6 @@ public class UserController {
 
     /**
      * 验证用户密码是否正确
-     *
      * @param userAccount 用户账号实体
      * @return 通用返回格式
      */
@@ -147,13 +156,26 @@ public class UserController {
 
     /**
      * 修改密码
-     *
      * @param userAccount 用户账号实体
      * @return 通用返回格式
      */
     @PostMapping("/modify/password")
     public Result modifyPassword(@RequestBody UserAccount userAccount) {
-        userAccountService.updateById(userAccount);
+        UpdateWrapper<UserAccount> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.set("password", userAccount.getPassword()).eq("user_id", userAccount.getUserId());
+        userAccountService.update(updateWrapper);
         return Result.success("修改密码成功");
+    }
+
+    /**
+     * 判断用户登录账户是否以及存在
+     * @param accountObj 用户登陆账号
+     * @return 通用返回格式
+     */
+    @PostMapping("/exist")
+    public Result userAccountExist(@RequestBody JSONObject accountObj){
+        String account = accountObj.getStr("account");
+        boolean isExist = userAccountService.getBaseMapper().exists(new QueryWrapper<UserAccount>().eq("account", account));
+        return Result.success(isExist);
     }
 }

@@ -6,7 +6,6 @@ import com.shuaib.bean.Stations;
 import com.shuaib.common.Result;
 import com.shuaib.service.StationsService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -20,7 +19,7 @@ public class StationsController {
      * 分页获取站点信息列表
      * @param currentPage 当前页码
      * @param pageSize 页面大小
-     * @return
+     * @return 通用返回格式
      */
     @GetMapping("/list")
     public Result getStationListPage(int currentPage, int pageSize){
@@ -30,7 +29,7 @@ public class StationsController {
     /**
      * 根据Id获取站点
      * @param stationId 站点编号
-     * @return
+     * @return 通用返回格式
      */
     @GetMapping("/info")
     public Result getStationById(Long stationId){
@@ -52,7 +51,6 @@ public class StationsController {
      * @param stationId 站点编号
      * @return 用返回格式
      */
-
     @DeleteMapping("/remove")
     public Result removeStation(Long stationId){
         stationsService.removeById(stationId);
@@ -69,6 +67,5 @@ public class StationsController {
         stationsService.updateById(stations);
         return Result.success("站点信息更新成功");
     }
-
 
 }

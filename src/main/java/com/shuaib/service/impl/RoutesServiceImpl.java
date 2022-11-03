@@ -6,15 +6,19 @@ import com.shuaib.service.RoutesService;
 import com.shuaib.mapper.RoutesMapper;
 import org.springframework.stereotype.Service;
 
+
 /**
 * @author shuai   b
 * @description 针对表【routes】的数据库操作Service实现
 * @createDate 2022-11-02 14:04:47
 */
 @Service
-public class RoutesServiceImpl extends ServiceImpl<RoutesMapper, Routes>
-    implements RoutesService{
+public class RoutesServiceImpl extends ServiceImpl<RoutesMapper, Routes> implements RoutesService{
 
+    @Override
+    public Routes getRouteInfoById(Long routeId) {
+        return null;
+    }
 }
 
 

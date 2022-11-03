@@ -33,7 +33,7 @@ public class Routes extends Model<Routes> implements Serializable {
 
     //公交信息实体(数据库中不存在)
     @TableField(exist = false)
-    private Buses buses;
+    private Buses bus;
 
     //线路结束节点次序
     private Integer startSequence;
@@ -43,7 +43,7 @@ public class Routes extends Model<Routes> implements Serializable {
 
     //线路包含的节点集合
     @TableField(exist = false)
-    private List<RouteNodes> routeNodesList;
+    private List<RouteNodes> routeNodeList;
 
     //线路价格
     private Double cost;

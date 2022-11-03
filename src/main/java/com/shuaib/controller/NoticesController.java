@@ -1,6 +1,5 @@
 package com.shuaib.controller;
 
-
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.shuaib.bean.Notices;
@@ -68,5 +67,7 @@ public class NoticesController {
     public Result getNoticeInfoById(@PathVariable("noticeId") Long noticeId){
         return Result.success(noticesService.getById(noticeId));
     }
+
+
 
 }

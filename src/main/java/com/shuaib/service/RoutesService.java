@@ -3,6 +3,8 @@ package com.shuaib.service;
 import com.shuaib.bean.Routes;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+
 /**
 * @author shuai   b
 * @description 针对表【routes】的数据库操作Service
@@ -10,4 +12,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface RoutesService extends IService<Routes> {
 
+    Routes getRouteInfoById(Long routeId);
 }
