@@ -11,7 +11,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Range;
+
 import javax.persistence.Column;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 /**
  * 线路节点信息实体
@@ -35,6 +39,7 @@ public class RouteNodes extends Model<RouteNodes> implements Serializable {
 
     //节点当前站点信息对象
     @TableField(exist = false)
+    @Valid
     private Stations currentStation;
 
     //节点下一站的信息编号
@@ -42,9 +47,11 @@ public class RouteNodes extends Model<RouteNodes> implements Serializable {
 
     //节点下一站的信息对象
     @TableField(exist = false)
+    @Valid
     private Stations nextStation;
 
     //两个节点之间的距离(单位:米)
+    @Range(min = 100, max = 5000, message = "站点之间距离应在100~5000米之间")
     private Double distance;
 
     //节点位于线路的相对次序

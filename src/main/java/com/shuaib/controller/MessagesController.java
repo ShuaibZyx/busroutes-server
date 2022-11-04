@@ -27,39 +27,42 @@ public class MessagesController {
     public Result getMessageListPage(int currentPage, int pageSize){
         return Result.success(messagesService.getBaseMapper().selectPage(new Page<>(currentPage,pageSize),new QueryWrapper<Messages>().orderByDesc("create_time")).getRecords());
     }*/
+
     /**
      * 用户添加留言
+     *
      * @param messages 留言消息实体，包含留言信息内容
      * @return 通用返回格式
      */
     @PostMapping("/createUserMessage")
-    public Result createUserMessage(@RequestBody Messages messages){
+    public Result createUserMessage(@RequestBody Messages messages) {
         messagesService.save(messages);
         return Result.success("用户留言添加成功");
     }
+
     /**
      * 管理员添加留言
+     *
      * @param messages 留言消息实体，包含留言消息内容
      * @return 通用返回格式
      */
     @PostMapping("/createAdminMessage")
-    public Result createAdminMessage(@RequestBody Messages messages){
+    public Result createAdminMessage(@RequestBody Messages messages) {
         messages.setSenderRole("admin");
         messagesService.save(messages);
         return Result.success("管理员留言添加成功");
     }
+
     /**
      * 根据messageId获取留言信息
+     *
      * @param messageId
      * @return
      */
     @GetMapping("/info")
-    public Result getMessageById(Long messageId){
+    public Result getMessageById(Long messageId) {
         return Result.success(messagesService.getById(messageId));
     }
-
-
-
 
 
 }

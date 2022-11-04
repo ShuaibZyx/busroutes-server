@@ -10,10 +10,15 @@ import com.shuaib.service.NoticeReadsService;
 import com.shuaib.service.UserAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 
+@Validated
 @RestController
 @RequestMapping("/noticeReads")
 public class NoticeReadsController {
@@ -30,7 +35,7 @@ public class NoticeReadsController {
      */
     @Transactional
     @PostMapping("/publish")
-    public Result publishNotice(Long noticeId) {
+    public Result publishNotice(@NotNull @NotEmpty Long noticeId) {
         List<UserAccount> userIdList = userAccountService.getBaseMapper().selectList(new QueryWrapper<UserAccount>().select("user_id").orderByDesc("create_time"));
         List<NoticeReads> noticeReadsList = new ArrayList<>();
         for (UserAccount userAccount : userIdList) {
@@ -47,13 +52,14 @@ public class NoticeReadsController {
 
     /**
      * 用户阅读公告
-     * @param noticeReads 阅读记录对象
+     * @param noticeRead 阅读记录对象
      * @return 通用返回格式
      */
     @PostMapping("/userView")
-    public Result noticeUserView(@RequestBody NoticeReads noticeReads) {
-        noticeReads.setState(true);
-        noticeReadsService.updateById(noticeReads);
+    public Result noticeUserView(@RequestBody @Validated NoticeReads noticeRead) {
+        UpdateWrapper<NoticeReads> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.set("state", true).eq("notice_id", noticeRead.getNoticeId()).eq("user_id", noticeRead.getUserId());
+        noticeReadsService.update(updateWrapper);
         return Result.success("阅读记录状态修改成功");
     }
 

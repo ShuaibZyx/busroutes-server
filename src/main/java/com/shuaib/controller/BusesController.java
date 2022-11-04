@@ -6,8 +6,10 @@ import com.shuaib.bean.Buses;
 import com.shuaib.common.Result;
 import com.shuaib.service.BusesService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+@Validated
 @RestController
 @RequestMapping("/bus")
 public class BusesController {
@@ -33,7 +35,7 @@ public class BusesController {
      * @return  通用返回格式
      */
     @PostMapping("/create")
-    public Result createBus(@RequestBody Buses buses) {
+    public Result createBus(@RequestBody @Validated Buses buses) {
         busesService.save(buses);
         return Result.success("添加公交信息成功");
     }
@@ -61,12 +63,12 @@ public class BusesController {
 
     /**
      * 更新公交信息
-     * @param buses 公交信息实体
+     * @param bus 公交信息实体
      * @return 通用返回格式
      */
     @PostMapping("/update")
-    public Result updateBusInfo(@RequestBody Buses buses){
-        busesService.updateById(buses);
+    public Result updateBusInfo(@RequestBody @Validated Buses bus){
+        busesService.updateById(bus);
         return Result.success("更新公交信息成功");
     }
 

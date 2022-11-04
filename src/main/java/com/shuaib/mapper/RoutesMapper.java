@@ -19,7 +19,11 @@ import static net.sf.jsqlparser.util.validation.metadata.NamedObject.column;
 @Mapper
 public interface RoutesMapper extends BaseMapper<Routes> {
 
-
+    /**
+     * 获取某个线路详细信息(线路信息,公交信息,线路包含的节点信息,节点包含的站点信息)
+     * @param routeId 路线编号
+     * @return 线路对象
+     */
     @Select("select * from routes where route_id = #{routeId}")
     @Results({
             @Result(column = "route_id", property = "routeId", id = true),
@@ -30,7 +34,6 @@ public interface RoutesMapper extends BaseMapper<Routes> {
                     one = @One(select = "com.shuaib.mapper.BusesMapper.selectById"))
     })
     Routes getRouteInfoById(Long routeId);
-
 
 }
 

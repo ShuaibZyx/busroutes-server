@@ -20,7 +20,7 @@ public interface RouteNodesMapper extends BaseMapper<RouteNodes> {
      * @param routeNodeId 节点编号
      * @return 节点对象
      */
-    @Select("select * from route_nodes where route_node_id = #{routeNodeId}")
+    @Select("select * from route_nodes where route_node_id = #{routeNodeId} order by sequence")
     @Results({
             @Result(column = "station_id", property = "stationId"),
             @Result(column = "station_id", property = "currentStation", javaType = Stations.class,

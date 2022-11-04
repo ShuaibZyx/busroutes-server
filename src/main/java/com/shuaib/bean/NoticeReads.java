@@ -12,8 +12,11 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * 公告阅读记录实体
+ *
  * @TableName notice_reads
  */
 @Data
@@ -27,9 +30,11 @@ public class NoticeReads extends Model<NoticeReads> implements Serializable {
     private Long noticeReadId;
 
     //公告编号(外键-->(notices:notice_id))
+    @NotNull
     private Long noticeId;
 
     //用户编号(外键-->(user_account:user_id))
+    @NotNull
     private Long userId;
 
     //阅读状态

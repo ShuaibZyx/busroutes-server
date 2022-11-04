@@ -6,8 +6,10 @@ import com.shuaib.bean.Notices;
 import com.shuaib.common.Result;
 import com.shuaib.service.NoticesService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+@Validated
 @RestController
 @RequestMapping("/notice")
 public class NoticesController {
@@ -31,7 +33,7 @@ public class NoticesController {
      * @return 通用返回格式
      */
     @PostMapping("/create")
-    public Result createNotice(@RequestBody Notices notices){
+    public Result createNotice(@RequestBody @Validated Notices notices){
         noticesService.save(notices);
         return Result.success("创建公告成功");
     }
@@ -53,13 +55,13 @@ public class NoticesController {
      * @return 通用返回格式
      */
     @PostMapping("/update")
-    public Result updateNoticeInfo(@RequestBody Notices notices){
+    public Result updateNoticeInfo(@RequestBody @Validated Notices notices){
         noticesService.updateById(notices);
         return Result.success("更新公告信息成功");
     }
 
     /**
-     * 根据公告编号获取公告信息
+     * 根据公告编号获取单个公告详细信息
      * @param noticeId 公告编号
      * @return 通用返回格式
      */

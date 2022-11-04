@@ -2,6 +2,7 @@ package com.shuaib.bean;
 
 import java.io.Serializable;
 import java.util.Date;
+
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -10,9 +11,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * 公告信息实体
+ *
  * @TableName notices
  */
 @Data
@@ -26,12 +31,14 @@ public class Notices extends Model<Notices> implements Serializable {
     private Long noticeId;
 
     //公告标题
+    @Length(min = 2, max = 100, message = "公告标题长度应在2~100位")
     private String title;
 
     //公告具体内容
     private String content;
 
     //公告发布者(管理员编号,外键-->(admin:admin_id))
+    @NotNull
     private Long publisherId;
 
     //公告创建时间

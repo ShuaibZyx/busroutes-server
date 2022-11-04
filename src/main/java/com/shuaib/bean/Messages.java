@@ -2,6 +2,7 @@ package com.shuaib.bean;
 
 import java.io.Serializable;
 import java.util.Date;
+
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -11,9 +12,12 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotNull;
+
 
 /**
  * 留言消息实体
+ *
  * @TableName messages
  */
 @Data
@@ -27,6 +31,7 @@ public class Messages extends Model<Messages> implements Serializable {
     private Long messageId;
 
     //留言编号(外键-->(issues:issue_id))
+    @NotNull
     private Long issueId;
 
     //发送者的角色字符串(user/admin)

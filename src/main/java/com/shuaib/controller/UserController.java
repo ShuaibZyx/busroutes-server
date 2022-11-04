@@ -12,10 +12,12 @@ import com.shuaib.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.UUID;
 
+@Validated
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -36,7 +38,7 @@ public class UserController {
      */
     @Transactional
     @PostMapping("/register")
-    public Result register(@RequestBody UserAccount userAccount) {
+    public Result register(@RequestBody @Validated UserAccount userAccount) {
         userAccountService.save(userAccount);
         //获取创建的用户编号
         Long userId = userAccountService.getOne(new QueryWrapper<UserAccount>().eq("account", userAccount.getAccount())).getUserId();
@@ -137,7 +139,7 @@ public class UserController {
      * @return 通用返回格式
      */
     @PostMapping("/update")
-    public Result updateUser(@RequestBody UserInfo userInfo) {
+    public Result updateUser(@RequestBody @Validated UserInfo userInfo) {
         userInfoService.updateById(userInfo);
         return Result.success("更新用户信息成功");
     }
@@ -160,7 +162,7 @@ public class UserController {
      * @return 通用返回格式
      */
     @PostMapping("/modify/password")
-    public Result modifyPassword(@RequestBody UserAccount userAccount) {
+    public Result modifyPassword(@RequestBody @Validated UserAccount userAccount) {
         UpdateWrapper<UserAccount> updateWrapper = new UpdateWrapper<>();
         updateWrapper.set("password", userAccount.getPassword()).eq("user_id", userAccount.getUserId());
         userAccountService.update(updateWrapper);
@@ -169,12 +171,11 @@ public class UserController {
 
     /**
      * 判断用户登录账户是否以及存在
-     * @param accountObj 用户登陆账号
+     * @param account 用户输入的登陆账号
      * @return 通用返回格式
      */
-    @PostMapping("/exist")
-    public Result userAccountExist(@RequestBody JSONObject accountObj){
-        String account = accountObj.getStr("account");
+    @GetMapping("/exist/{account}")
+    public Result userAccountExist(@PathVariable("account") String account){
         boolean isExist = userAccountService.getBaseMapper().exists(new QueryWrapper<UserAccount>().eq("account", account));
         return Result.success(isExist);
     }

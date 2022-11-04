@@ -2,7 +2,6 @@ package com.shuaib.bean;
 
 import java.io.Serializable;
 import java.util.Date;
-
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -11,6 +10,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * 站点信息实体
@@ -27,6 +28,7 @@ public class Stations extends Model<Stations> implements Serializable {
     private Long stationId;
 
     //站点名称
+    @Length(min = 1, max = 30, message = "站点名称应在1~30位")
     private String stationName;
 
     //站点所属城市数字编码字符串

@@ -2,6 +2,7 @@ package com.shuaib.bean;
 
 import java.io.Serializable;
 import java.util.Date;
+
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -10,9 +11,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Range;
+
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 /**
  * 文件实体
+ *
  * @TableName files
  */
 @Data
@@ -26,18 +32,22 @@ public class Files extends Model<Files> implements Serializable {
     private String fileId;
 
     //文件原名
+    @NotEmpty
     private String originalName;
 
     //文件类型(后缀)
+    @NotEmpty
     private String fileType;
 
     //文件大小(单位:字节)
+    @Range(min = 1, message = "文件最小为1个字节")
     private Integer fileSize;
 
     //文件访问的webUrl
     private String fileUrl;
 
     //文件所属文件夹
+    @NotEmpty
     private String folder;
 
     //文件信息创建时间

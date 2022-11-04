@@ -13,9 +13,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Range;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 /**
  * 公交线路信息实体
+ *
  * @TableName routes
  */
 @Data
@@ -33,6 +38,7 @@ public class Routes extends Model<Routes> implements Serializable {
 
     //公交信息实体(数据库中不存在)
     @TableField(exist = false)
+    @Valid
     private Buses bus;
 
     //线路结束节点次序
@@ -43,15 +49,18 @@ public class Routes extends Model<Routes> implements Serializable {
 
     //线路包含的节点集合
     @TableField(exist = false)
+    @Valid
     private List<RouteNodes> routeNodeList;
 
     //线路价格
+    @Range(min = 1, max = 10, message = "线路价格应在1~10元之间")
     private Double cost;
 
     //线路运行时间范围
     private String timeRange;
 
-    //线路发车间隔
+    //线路发车间隔(单位:分钟)
+    @Range(min = 5, max = 20)
     private Integer interval;
 
     //是否为夜间行车线路

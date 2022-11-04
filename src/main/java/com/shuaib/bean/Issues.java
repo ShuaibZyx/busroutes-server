@@ -2,6 +2,7 @@ package com.shuaib.bean;
 
 import java.io.Serializable;
 import java.util.Date;
+
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -11,9 +12,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Range;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 /**
  * 留言实体
+ *
  * @TableName issues
  */
 @Data
@@ -27,16 +33,19 @@ public class Issues extends Model<Issues> implements Serializable {
     private Long issueId;
 
     //留言创建者编号(外键-->(user_account:user_id))
+    @NotNull
     private Long createId;
 
     //留言者(用户)信息
     @TableField(exist = false)
+    @Valid
     private UserInfo userInfo;
 
     //处理者(管理员)编号(外键-->(admin:admin_id))
     private Long adminId;
 
     //留言标题
+    @Range(min = 2, max = 100, message = "留言标题应在2~100位")
     private String title;
 
     //留言具体描述

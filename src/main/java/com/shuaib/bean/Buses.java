@@ -11,9 +11,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
+
+import javax.validation.constraints.NotNull;
 
 /**
  * 公交信息
+ *
  * @TableName buses
  */
 @Data
@@ -27,6 +31,7 @@ public class Buses extends Model<Buses> implements Serializable {
     private Long busId;
 
     //公交名称
+    @Length(min = 1, max = 15, message = "公交车名称应在1~15位")
     private String busName;
 
     //公交所属城市
