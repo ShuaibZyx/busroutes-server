@@ -2,6 +2,7 @@ package com.shuaib.bean;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -34,7 +35,7 @@ public class Issues extends Model<Issues> implements Serializable {
 
     //留言创建者编号(外键-->(user_account:user_id))
     @NotNull
-    private Long createId;
+    private Long createrId;
 
     //留言者(用户)信息
     @TableField(exist = false)
@@ -59,6 +60,9 @@ public class Issues extends Model<Issues> implements Serializable {
 
     //留言信息更新时间
     private Date updateTime;
+
+    @TableField(exist = false)
+    List<Messages> messageList;
 
     private static final long serialVersionUID = 1L;
 }
