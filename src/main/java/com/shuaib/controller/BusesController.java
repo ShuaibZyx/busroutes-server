@@ -30,9 +30,20 @@ public class BusesController {
     }
 
     /**
+     * 获取公交车总数量
+     *
+     * @return 通用返回格式
+     */
+    @GetMapping("/count")
+    public Result getBusCount() {
+        return Result.success(busesService.count());
+    }
+
+    /**
      * 添加一个公交车信息
+     *
      * @param buses 公交车信息实体
-     * @return  通用返回格式
+     * @return 通用返回格式
      */
     @PostMapping("/create")
     public Result createBus(@RequestBody @Validated Buses buses) {
@@ -42,6 +53,7 @@ public class BusesController {
 
     /**
      * 删除一个公交信息
+     *
      * @param busId 公交车信息编号
      * @return 通用返回格式
      */
@@ -53,6 +65,7 @@ public class BusesController {
 
     /**
      * 根据busId获取公交信息
+     *
      * @param busId 公交编号
      * @return 通用返回格式
      */
@@ -63,11 +76,12 @@ public class BusesController {
 
     /**
      * 更新公交信息
+     *
      * @param bus 公交信息实体
      * @return 通用返回格式
      */
-    @PostMapping("/update")
-    public Result updateBusInfo(@RequestBody @Validated Buses bus){
+    @PostMapping("/modify")
+    public Result updateBusInfo(@RequestBody @Validated Buses bus) {
         busesService.updateById(bus);
         return Result.success("更新公交信息成功");
     }

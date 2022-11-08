@@ -58,7 +58,7 @@ public class UserInfo extends Model<UserInfo> implements Serializable {
     @Email(message = "邮箱格式有误")
     private String email;
 
-    //用户头像文件url字符串
+    //用户头像文件编号
     private String avatarFileId;
 
     //用户信息创建时间

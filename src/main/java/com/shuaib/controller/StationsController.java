@@ -1,6 +1,7 @@
 package com.shuaib.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.shuaib.bean.Stations;
 import com.shuaib.common.Result;
@@ -40,6 +41,16 @@ public class StationsController {
     }
 
     /**
+     * 获取车站信息总数
+     *
+     * @return 通用返回格式
+     */
+    @GetMapping("/count")
+    public Result getStationCount() {
+        return Result.success(stationsService.count());
+    }
+
+    /**
      * 添加一个站点
      *
      * @param stations 站点对象实体，包含站点信息
@@ -69,10 +80,24 @@ public class StationsController {
      * @param stations 站点对象
      * @return 通用返回格式
      */
-    @PostMapping("/update")
+    @PostMapping("/modify")
     public Result updateStation(@RequestBody @Validated Stations stations) {
         stationsService.updateById(stations);
         return Result.success("站点信息更新成功");
+    }
+
+    /**
+     * 修改车站状态
+     * @param stationId 站点信息编号
+     * @param state 站点状态
+     * @return 通用返回格式
+     */
+    @PutMapping("/modify/state/{stationId}")
+    public Result modifyStationState(@PathVariable("stationId") Long stationId, @RequestParam Boolean state) {
+        UpdateWrapper<Stations> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.set("state", state).eq("station_id", stationId);
+        stationsService.update(updateWrapper);
+        return Result.success("修改车站状态成功");
     }
 
 }

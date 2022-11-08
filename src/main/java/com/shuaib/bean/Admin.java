@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
@@ -48,6 +49,12 @@ public class Admin extends Model<Admin> implements Serializable {
     //管理员权限(数字越大权限越高)
     @Range(min = 0, max = 3, message = "管理员权限数字应在0~3之间")
     private Integer power;
+
+    //用户头像文件编号
+    private String avatarFileId;
+
+    @TableField(exist = false)
+    private Files avatarFile;
 
     //管理员信息创建时间
     private Date createTime;

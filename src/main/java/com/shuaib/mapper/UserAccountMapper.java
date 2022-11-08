@@ -19,10 +19,11 @@ public interface UserAccountMapper extends BaseMapper<UserAccount> {
 
     /**
      * 分页查询用户列表(包含附加信息)
+     *
      * @param page 分页对象
      * @return 分页查询结果
      */
-    @Select("select * from user_account order by create_time desc")
+    @Select("select user_id, account, available, update_time, create_time from user_account order by create_time desc")
     @Results({
             @Result(column = "user_id", property = "userId", id = true),
             @Result(column = "user_id", property = "userInfo", javaType = UserInfo.class,

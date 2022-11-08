@@ -19,10 +19,12 @@ public class IssuesController {
 
     @Autowired
     private IssuesService issuesService;
+
     /**
      * 获取消息
+     *
      * @param currentPage 当前页码
-     * @param pageSize 页面大小
+     * @param pageSize    页面大小
      * @return 通用返回格式
      */
     @GetMapping("/list")
@@ -33,8 +35,10 @@ public class IssuesController {
         List<Issues> issuesList = issuesService.getBaseMapper().selectPage(page, queryWrapper).getRecords();
         return Result.success(issuesList);
     }
+
     /**
      * 用户发表留言
+     *
      * @param issues 消息信息实体，包含消息信息内容
      * @return 通用返回格式
      */
@@ -43,8 +47,10 @@ public class IssuesController {
         issuesService.save(issues);
         return Result.success("用户发表消息信息成功");
     }
+
     /**
      * 查看消息信息
+     *
      * @param issueId 消息信息编号
      * @return 通用返回格式
      */

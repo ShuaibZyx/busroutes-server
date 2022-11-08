@@ -18,7 +18,7 @@ import java.util.Date;
 public class JwtConfig {
 
     private String secret;
-    private long expire;
+    private Long expire;
     private String header;
 
     /**
@@ -89,7 +89,7 @@ public class JwtConfig {
      * 设置token过期时间
      * @param expire 过期时间(毫秒)
      */
-    public void setExpire(long expire) {
+    public void setExpire(Long expire) {
         this.expire = expire;
     }
 }

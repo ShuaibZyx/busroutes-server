@@ -9,17 +9,15 @@ import com.shuaib.common.Result;
 import com.shuaib.common.jwt.JwtConfig;
 import com.shuaib.service.AdminService;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.Range;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.validation.Valid;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.util.UUID;
 
 @Validated
 @RestController
@@ -34,26 +32,27 @@ public class AdminController {
     /**
      * 管理员登录接口
      *
-     * @param account  管理员账号
-     * @param password 管理员密码
+     * @param loginObject 登录所需要的参数
      * @return 通用返回格式
      */
     @PostMapping("/login")
-    public Result adminLogin(String account, String password) {
+    public Result adminLogin(@RequestBody JSONObject loginObject) {
+        String account = loginObject.getStr("account");
+        String password = loginObject.getStr("password");
+        Long expire = loginObject.getLong("expire");
         JSONObject json = new JSONObject();
         QueryWrapper<Admin> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("account", account);
         Admin admin = adminService.getBaseMapper().selectOne(queryWrapper);
         if (admin == null) return Result.error("账号不存在");
         if (!password.equals(admin.getPassword())) return Result.error("密码错误");
-        // 这里把userId转为String类型，实际开发中如果subject需要存userId，则可以JwtConfig的createToken方法的参数设置为Long类型
+        // 这里把userId转为String类型,实际开发中如果subject需要存userId，则可以JwtConfig的createToken方法的参数设置为Long类型
+        jwtConfig.setExpire(expire);
         String token = jwtConfig.createToken(admin.getAdminId().toString());
-        String adminId = jwtConfig.getUserIdFromToken(token);
         if (!StringUtils.isEmpty(token)) {
             json.set("token", token);
-            json.set("adminId", adminId);
         }
-        return Result.success(json);
+        return Result.success(200, "登陆成功", json);
     }
 
     /**
@@ -65,10 +64,44 @@ public class AdminController {
      */
     @GetMapping("/list")
     public Result getAdminListPage(int currentPage, int pageSize) {
+        System.out.println(pageSize);
+        System.out.println(currentPage);
         QueryWrapper<Admin> queryWrapper = new QueryWrapper<>();
         queryWrapper.ne("admin_id", "666666666").orderByDesc("create_time");
         Page<Admin> page = new Page<>(currentPage, pageSize);
         return Result.success(adminService.getBaseMapper().selectPage(page, queryWrapper).getRecords());
+    }
+
+    /**
+     * 获取所有普通管理员数量
+     * @return 通用返回格式
+     */
+    @GetMapping("/count")
+    public Result getAdminCount(){
+        return Result.success(adminService.count(new QueryWrapper<Admin>().ne("admin_id", "666666666")));
+    }
+
+    /**
+     * 根据token获取当前管理员的信息
+     *
+     * @param token 令牌字符串
+     * @return 通用返回格式
+     */
+    @GetMapping("/info/token/{token}")
+    public Result getAdminInfoByToken(@PathVariable("token") String token) {
+        Long adminId = Long.valueOf(jwtConfig.getUserIdFromToken(token));
+        return Result.success(adminService.getAdminInfoById(adminId));
+    }
+
+    /**
+     * 根据id获取当前管理员的信息
+     *
+     * @param adminId 管理员Id
+     * @return 通用返回格式
+     */
+    @GetMapping("/info/id/{adminId}")
+    public Result getAdminInfoById(@PathVariable("adminId") Long adminId) {
+        return Result.success(adminService.getAdminInfoById(adminId));
     }
 
     /**
@@ -84,15 +117,35 @@ public class AdminController {
     }
 
     /**
-     * 删除一个管理员
+     * 快速创建一个管理员
      *
-     * @param adminId 管理员编号
+     * @param adminObj 管理员电话
      * @return 通用返回格式
      */
-    @DeleteMapping("/remove/{adminId}")
-    public Result removeAdminById(@PathVariable("adminId") Long adminId) {
-        adminService.removeById(adminId);
-        return Result.success("删除管理员成功");
+    @PostMapping("/create/fast")
+    public Result createAdminFast(@RequestBody JSONObject adminObj) {
+        String telephone = adminObj.getStr("telephone");
+        Admin admin = new Admin();
+        admin.setTelephone(telephone);
+        admin.setAccount(UUID.randomUUID().toString().replace("-", "").substring(0, 9));
+        admin.setPassword("absolutelyShuaib");
+        adminService.save(admin);
+        return Result.success("创建管理员成功,账号为:" + admin.getAccount());
+    }
+
+    /**
+     * 超级管理员更新管理员信息
+     * @param admin 普通管理员实体对象
+     * @return 通用返回格式
+     */
+    @PostMapping("/modify")
+    public Result modifyAdmin(@RequestBody @Validated Admin admin) {
+        UpdateWrapper<Admin> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.set("account", admin.getAccount()).set("password", admin.getPassword())
+                .set("power", admin.getPower()).set("telephone", admin.getTelephone())
+                .eq("admin_id", admin.getAdminId());
+        adminService.update(updateWrapper);
+        return Result.success("更新管理员信息成功");
     }
 
     /**
@@ -132,20 +185,6 @@ public class AdminController {
         return Result.success("修改电话号码成功");
     }
 
-    /**
-     * 修改普通管理员权限
-     *
-     * @param adminId 管理员编号
-     * @param power   权限级别数字
-     * @return 通用返回格式
-     */
-    @PutMapping("/modify/role/{adminId}")
-    public Result modifyRole(@PathVariable(value = "adminId") Long adminId, @Range(min = 0, max = 3, message = "权限数字应在0~3之间") Integer power) {
-        UpdateWrapper<Admin> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.set("power", power).eq("admin_id", adminId);
-        adminService.update(updateWrapper);
-        return Result.success("修改权限成功");
-    }
 
     /**
      * 超级管理员重置普通管理员密码
@@ -159,5 +198,29 @@ public class AdminController {
         updateWrapper.set("password", "absolutelyShuaib").eq("admin_id", adminId);
         adminService.update(updateWrapper);
         return Result.success("重置密码成功");
+    }
+
+    /**
+     * 删除一个管理员
+     *
+     * @param adminId 管理员编号
+     * @return 通用返回格式
+     */
+    @DeleteMapping("/remove/{adminId}")
+    public Result removeAdminById(@PathVariable("adminId") Long adminId) {
+        adminService.removeById(adminId);
+        return Result.success("删除管理员成功");
+    }
+
+    /**
+     * 验证管理员账号是否存在
+     *
+     * @param account 管理员账号
+     * @return 通用返回格式
+     */
+    @GetMapping("/exist/{account}")
+    public Result adminAccountExist(@PathVariable("account") String account) {
+        boolean isExist = adminService.getBaseMapper().exists(new QueryWrapper<Admin>().eq("account", account));
+        return Result.success(isExist);
     }
 }
