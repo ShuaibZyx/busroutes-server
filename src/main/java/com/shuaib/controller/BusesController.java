@@ -86,4 +86,10 @@ public class BusesController {
         return Result.success("更新公交信息成功");
     }
 
+    @GetMapping("/search")
+    public Result getBusList(String busName) {
+        QueryWrapper<Buses> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("bus_id", "bus_name", "city_code").like("bus_name", busName).orderByDesc("create_time");
+        return Result.success(busesService.getBaseMapper().selectList(queryWrapper));
+    }
 }

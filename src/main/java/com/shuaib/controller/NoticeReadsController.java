@@ -4,16 +4,17 @@ import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.shuaib.bean.NoticeReads;
+import com.shuaib.bean.Notices;
 import com.shuaib.bean.UserAccount;
 import com.shuaib.common.Result;
 import com.shuaib.service.NoticeReadsService;
+import com.shuaib.service.NoticesService;
 import com.shuaib.service.UserAccountService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,9 @@ public class NoticeReadsController {
     private NoticeReadsService noticeReadsService;
 
     @Autowired
+    private NoticesService noticesService;
+
+    @Autowired
     private UserAccountService userAccountService;
 
     /**
@@ -35,17 +39,16 @@ public class NoticeReadsController {
      */
     @Transactional
     @PostMapping("/publish")
-    public Result publishNotice(@NotNull @NotEmpty Long noticeId) {
+    public Result publishNotice(@NotNull Long noticeId) {
         List<UserAccount> userIdList = userAccountService.getBaseMapper().selectList(new QueryWrapper<UserAccount>().select("user_id").orderByDesc("create_time"));
-        List<NoticeReads> noticeReadsList = new ArrayList<>();
         for (UserAccount userAccount : userIdList) {
             NoticeReads noticesRead = new NoticeReads();
             noticesRead.setUserId(userAccount.getUserId());
             noticesRead.setNoticeId(noticeId);
             noticesRead.setState(false);
-            noticeReadsList.add(noticesRead);
+            noticeReadsService.saveOrUpdate(noticesRead, new UpdateWrapper<NoticeReads>().eq("notice_id", noticeId).eq("user_id", userAccount.getUserId()));
         }
-        noticeReadsService.saveOrUpdateBatch(noticeReadsList);
+        noticesService.update(new UpdateWrapper<Notices>().set("state", true).eq("notice_id", noticeId));
         return Result.success("公告发布成功");
     }
 
@@ -73,7 +76,7 @@ public class NoticeReadsController {
         UpdateWrapper<NoticeReads> updateWrapper = new UpdateWrapper<>();
         updateWrapper.set("state", true).eq("notice_id", noticeId);
         noticeReadsService.update(updateWrapper);
-        return Result.success("该公告全部已读");
+        return Result.success("该公告涉及用户全部已读");
     }
 
     /**

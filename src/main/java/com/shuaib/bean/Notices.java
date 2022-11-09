@@ -41,6 +41,8 @@ public class Notices extends Model<Notices> implements Serializable {
     @NotNull
     private Long publisherId;
 
+    private Boolean state;
+
     //公告创建时间
     private Date createTime;
 

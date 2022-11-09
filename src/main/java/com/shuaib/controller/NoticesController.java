@@ -28,6 +28,15 @@ public class NoticesController {
     }
 
     /**
+     * 获取留言总数量
+     * @return 通用返回格式
+     */
+    @GetMapping("/count")
+    public Result getNoticeCount(){
+        return Result.success(noticesService.count());
+    }
+
+    /**
      * 添加一个公告
      * @param notices 公告信息对象
      * @return 通用返回格式
@@ -54,7 +63,7 @@ public class NoticesController {
      * @param notices 公告信息对象
      * @return 通用返回格式
      */
-    @PostMapping("/update")
+    @PostMapping("/modify")
     public Result updateNoticeInfo(@RequestBody @Validated Notices notices){
         noticesService.updateById(notices);
         return Result.success("更新公告信息成功");

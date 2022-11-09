@@ -61,7 +61,7 @@ public class Routes extends Model<Routes> implements Serializable {
 
     //线路发车间隔(单位:分钟)
     @Range(min = 5, max = 20)
-    private Integer interval;
+    private Integer busInterval;
 
     //是否为夜间行车线路
     private Boolean isNight;

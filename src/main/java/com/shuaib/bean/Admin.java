@@ -15,7 +15,6 @@ import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 /**

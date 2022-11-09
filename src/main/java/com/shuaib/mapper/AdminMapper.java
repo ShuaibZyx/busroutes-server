@@ -16,7 +16,7 @@ import static net.sf.jsqlparser.util.validation.metadata.NamedObject.column;
  */
 @Mapper
 public interface AdminMapper extends BaseMapper<Admin> {
-    @Select("select * from admin where admin_id = #{adminId}")
+    @Select("select admin_id, account, telephone, power, create_time, update_time from admin where admin_id = #{adminId}")
     @Results({
             @Result(column = "avatar_file_id", property = "avatarFileId"),
             @Result(column = "avatar_file_id", property = "avatarFile", javaType = Files.class,
