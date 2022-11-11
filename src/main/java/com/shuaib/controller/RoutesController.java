@@ -116,7 +116,7 @@ public class RoutesController {
     @PutMapping("/modify/endSequence/{routeId}")
     public Result modifyRouteEndSequence(@PathVariable("routeId") Long routeId, @RequestParam Integer endSequence) {
         UpdateWrapper<Routes> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.set("start_sequence", endSequence).eq("route_id", routeId);
+        updateWrapper.set("end_sequence", endSequence).eq("route_id", routeId);
         routesService.update(updateWrapper);
         return Result.success("已设置该线路终止次序为" + endSequence);
     }
