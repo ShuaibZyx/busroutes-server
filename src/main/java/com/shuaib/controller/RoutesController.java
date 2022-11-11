@@ -1,6 +1,7 @@
 package com.shuaib.controller;
 
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.shuaib.bean.RouteNodes;
 import com.shuaib.bean.Routes;
 import com.shuaib.common.Result;
 import com.shuaib.service.RoutesService;
@@ -8,8 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
+import java.util.Comparator;
 
 @Validated
 @RestController
@@ -45,6 +45,7 @@ public class RoutesController {
 
     /**
      * 获取线路总数量
+     *
      * @return 通用返回格式
      */
     @GetMapping("/count")
@@ -55,20 +56,12 @@ public class RoutesController {
     /**
      * 更新路线基本信息
      *
-     * @param routes 路线实体对象
+     * @param route 路线实体对象
      * @return 通用返回格式
      */
     @PostMapping("/modify/baseInfo")
-    public Result updateRouteBaseInfoById(@RequestBody @Validated Routes routes) {
-        UpdateWrapper<Routes> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.set("bus_id", routes.getBusId());
-        updateWrapper.set("cost", routes.getCost());
-        updateWrapper.set("time_range", routes.getTimeRange());
-        updateWrapper.set("bus_interval", routes.getBusInterval());
-        updateWrapper.set("is_night", routes.getIsNight());
-        updateWrapper.set("is_circle", routes.getIsCircle());
-        updateWrapper.eq("route_id", routes.getRouteId());
-        routesService.update(updateWrapper);
+    public Result updateRouteBaseInfoById(@RequestBody @Validated Routes route) {
+        routesService.updateById(route);
         return Result.success("更新路线基本信息成功");
     }
 
@@ -80,11 +73,15 @@ public class RoutesController {
      */
     @GetMapping("/info/{routeId}")
     public Result getRouteInfoById(@PathVariable("routeId") Long routeId) {
-        return Result.success(routesService.getRouteInfoById(routeId));
+        Routes route = routesService.getRouteInfoById(routeId);
+        route.getRouteNodeList().sort(Comparator.comparingInt(RouteNodes::getSequence));
+        return Result.success(route);
     }
+
 
     /**
      * 根据编号删除一条线路
+     *
      * @param routeId 线路编号
      * @return 通用返回格式
      */
@@ -94,20 +91,33 @@ public class RoutesController {
         return Result.success("该线路已被删除");
     }
 
-
     /**
-     * 修改线路始末节点
+     * 修改线路的起始次序
      *
      * @param routeId       线路编号
-     * @param startSequence 开始次序
-     * @param endSequence   结束次序
+     * @param startSequence 起始次序
      * @return 通用返回格式
      */
-    @PutMapping("/update/sequence")
-    public Result updateRouteSequence(@NotNull @NotEmpty Long routeId, Integer startSequence, Integer endSequence) {
+    @PutMapping("/modify/startSequence/{routeId}")
+    public Result modifyRouteStartSequence(@PathVariable("routeId") Long routeId, @RequestParam Integer startSequence) {
         UpdateWrapper<Routes> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.set("start_sequence", startSequence).set("end_sequence", endSequence).eq("route_id", routeId);
+        updateWrapper.set("start_sequence", startSequence).eq("route_id", routeId);
         routesService.update(updateWrapper);
-        return Result.success("线路始末节点修改成功");
+        return Result.success("已设置该线路起始次序为" + startSequence);
+    }
+
+    /**
+     * 修改线路的终止次序
+     *
+     * @param routeId     线路编号
+     * @param endSequence 终止次序
+     * @return 通用返回格式
+     */
+    @PutMapping("/modify/endSequence/{routeId}")
+    public Result modifyRouteEndSequence(@PathVariable("routeId") Long routeId, @RequestParam Integer endSequence) {
+        UpdateWrapper<Routes> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.set("start_sequence", endSequence).eq("route_id", routeId);
+        routesService.update(updateWrapper);
+        return Result.success("已设置该线路终止次序为" + endSequence);
     }
 }

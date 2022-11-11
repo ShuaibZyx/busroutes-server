@@ -24,6 +24,11 @@
       "name": "shuaib.jwt.secret",
       "type": "java.lang.String",
       "description": "Description for shuaib.jwt.secret."
+    },
+    {
+      "name": "spring.resources.chain.static-locations",
+      "type": "java.lang.String",
+      "description": "Description for spring.resources.chain.static-locations."
     }
   ]
 }

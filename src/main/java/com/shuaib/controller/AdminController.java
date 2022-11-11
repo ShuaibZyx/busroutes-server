@@ -5,14 +5,18 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.shuaib.bean.Admin;
+import com.shuaib.bean.Files;
 import com.shuaib.common.Result;
 import com.shuaib.common.jwt.JwtConfig;
 import com.shuaib.service.AdminService;
+import com.shuaib.service.FilesService;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
@@ -28,6 +32,9 @@ public class AdminController {
 
     @Autowired
     private AdminService adminService;
+
+    @Autowired
+    private FilesService filesService;
 
     /**
      * 管理员登录接口
@@ -63,21 +70,20 @@ public class AdminController {
      * @return 通用返回格式
      */
     @GetMapping("/list")
-    public Result getAdminListPage(int currentPage, int pageSize) {
-        System.out.println(pageSize);
-        System.out.println(currentPage);
+    public Result getAdminListPage(int currentPage, int pageSize, Long currentAdminId) {
         QueryWrapper<Admin> queryWrapper = new QueryWrapper<>();
-        queryWrapper.ne("admin_id", "666666666").orderByDesc("create_time");
+        queryWrapper.ne("admin_id", "666666666").ne("admin_id", currentAdminId).orderByDesc("create_time");
         Page<Admin> page = new Page<>(currentPage, pageSize);
         return Result.success(adminService.getBaseMapper().selectPage(page, queryWrapper).getRecords());
     }
 
     /**
      * 获取所有普通管理员数量
+     *
      * @return 通用返回格式
      */
     @GetMapping("/count")
-    public Result getAdminCount(){
+    public Result getAdminCount() {
         return Result.success(adminService.count(new QueryWrapper<Admin>().ne("admin_id", "666666666")));
     }
 
@@ -101,7 +107,9 @@ public class AdminController {
      */
     @GetMapping("/info/id/{adminId}")
     public Result getAdminInfoById(@PathVariable("adminId") Long adminId) {
-        return Result.success(adminService.getAdminInfoById(adminId));
+        Admin admin = adminService.getAdminInfoById(adminId);
+        admin.setPassword(null);
+        return Result.success(admin);
     }
 
     /**
@@ -135,6 +143,7 @@ public class AdminController {
 
     /**
      * 超级管理员更新管理员信息
+     *
      * @param admin 普通管理员实体对象
      * @return 通用返回格式
      */
@@ -157,8 +166,7 @@ public class AdminController {
      * @return 通用返回格式
      */
     @PostMapping("/modify/password")
-    public Result modifyPassword(@NotNull Long adminId,
-                                 @Length(min = 6, max = 17, message = "管理员密码应在6~17位") String oldPassword,
+    public Result modifyPassword(@NotNull Long adminId, String oldPassword,
                                  @Length(min = 6, max = 17, message = "管理员密码应在6~17位") String newPassword) {
         Admin admin = adminService.getById(adminId);
         if (admin == null) return Result.error("账号不存在");
@@ -222,5 +230,29 @@ public class AdminController {
     public Result adminAccountExist(@PathVariable("account") String account) {
         boolean isExist = adminService.getBaseMapper().exists(new QueryWrapper<Admin>().eq("account", account));
         return Result.success(isExist);
+    }
+
+    /**
+     * 管理员修改自己的头像
+     *
+     * @param adminId 管理员编号
+     * @param file    头像文件
+     * @param dir     文件所属文件夹
+     * @return 通用返回格式
+     */
+    @Transactional
+    @PostMapping("/avatar")
+    public Result uploadAdminAvatarFile(Long adminId, MultipartFile file, String dir) {
+        Files fileObj = filesService.uploadFile(file, dir);
+        Admin admin = adminService.getById(adminId);
+        UpdateWrapper<Admin> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.set("avatar_file_id", fileObj.getFileId()).eq("admin_id", adminId);
+        if (admin.getAvatarFileId().equals("")) adminService.update(updateWrapper);
+        else {
+            Files originalFile = filesService.getById(admin.getAvatarFileId());
+            filesService.deleteFile(originalFile.getFileId(), originalFile.getFolder());
+            adminService.update(updateWrapper);
+        }
+        return Result.success("修改头像成功");
     }
 }

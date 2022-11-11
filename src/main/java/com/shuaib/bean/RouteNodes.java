@@ -2,6 +2,7 @@ package com.shuaib.bean;
 
 import java.io.Serializable;
 import java.util.Date;
+
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -13,12 +14,11 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Range;
 
-import javax.persistence.Column;
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 
 /**
  * 线路节点信息实体
+ *
  * @TableName route_nodes
  */
 @Data
@@ -55,7 +55,6 @@ public class RouteNodes extends Model<RouteNodes> implements Serializable {
     private Double distance;
 
     //节点位于线路的相对次序
-    @Column(columnDefinition = "smallint not null default'0' UNIQUE auto_increment")
     private Integer sequence;
 
     //节点创建时间

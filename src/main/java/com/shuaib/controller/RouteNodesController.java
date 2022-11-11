@@ -4,13 +4,13 @@ import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.shuaib.bean.RouteNodes;
 import com.shuaib.common.Result;
 import com.shuaib.service.RouteNodesService;
+import com.shuaib.service.RoutesService;
 import org.hibernate.validator.constraints.Range;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Validated
@@ -63,11 +63,12 @@ public class RouteNodesController {
      * @param distance    距离(单位:米)
      * @return 通用返回格式
      */
-    @PutMapping("/update/distance")
-    public Result updateRouteNodeDistance(@NotNull @NotEmpty Long routeNodeId,
+    @PutMapping("/modify/distance")
+    public Result updateRouteNodeDistance(@NotNull Long routeNodeId,
                                           @Range(min = 100, max = 5000, message = "站点之间距离应在100~5000米之间") Double distance) {
         UpdateWrapper<RouteNodes> updateWrapper = new UpdateWrapper<>();
         updateWrapper.set("distance", distance).eq("route_node_id", routeNodeId);
+        routeNodesService.update(updateWrapper);
         return Result.success("节点距离修改成功");
     }
 
@@ -78,11 +79,11 @@ public class RouteNodesController {
      * @param sequence    相对次序
      * @return 通用返回格式
      */
-    @PutMapping("/update/sequence")
-    public Result updateRouteNodeSequence(@NotNull @NotEmpty Long routeNodeId, Integer sequence) {
+    @PutMapping("/modify/sequence")
+    public Result updateRouteNodeSequence(@NotNull Long routeNodeId, Integer sequence) {
         UpdateWrapper<RouteNodes> updateWrapper = new UpdateWrapper<>();
         updateWrapper.set("sequence", sequence).eq("route_node_id", routeNodeId);
+        routeNodesService.update(updateWrapper);
         return Result.success("节点次序修改成功");
     }
-
 }

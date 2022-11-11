@@ -88,8 +88,9 @@ public class StationsController {
 
     /**
      * 修改车站状态
+     *
      * @param stationId 站点信息编号
-     * @param state 站点状态
+     * @param state     站点状态
      * @return 通用返回格式
      */
     @PutMapping("/modify/state/{stationId}")
@@ -100,4 +101,18 @@ public class StationsController {
         return Result.success("修改车站状态成功");
     }
 
+
+    /**
+     * 获得搜索条件下的所有可用车站信息
+     *
+     * @param stationName 车站名称
+     * @param cityCode    所属城市
+     * @return 通用返回格式
+     */
+    @GetMapping("/search")
+    public Result getStationList(String stationName, String cityCode) {
+        QueryWrapper<Stations> queryWrapper = new QueryWrapper<>();
+        queryWrapper.select("station_id", "station_name").like("station_name", stationName).like("city_code", cityCode.substring(0, 13)).eq("state", 1).orderByDesc("create_time");
+        return Result.success(stationsService.getBaseMapper().selectList(queryWrapper));
+    }
 }

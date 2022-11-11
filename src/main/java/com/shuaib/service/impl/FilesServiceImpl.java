@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,8 +22,9 @@ public class FilesServiceImpl extends ServiceImpl<FilesMapper, Files> implements
 
     /**
      * 上传单个文件
+     *
      * @param file 上传的文件
-     * @param dir 上传的文件存入的目录
+     * @param dir  上传的文件存入的目录
      * @return 上传文件信息
      */
     @Transactional
@@ -35,8 +37,9 @@ public class FilesServiceImpl extends ServiceImpl<FilesMapper, Files> implements
 
     /**
      * 上传多个文件
+     *
      * @param files 上传的文件列表
-     * @param dir 上传的文件列表存入的目录
+     * @param dir   上传的文件列表存入的目录
      * @return 上传文件列表息
      */
     @Transactional
@@ -51,8 +54,9 @@ public class FilesServiceImpl extends ServiceImpl<FilesMapper, Files> implements
 
     /**
      * 删除单个文件
+     *
      * @param fileId 文件编号
-     * @param dir 文件所在文件夹
+     * @param dir    文件所在文件夹
      * @return 是否删除成功
      */
     @Transactional
@@ -60,7 +64,7 @@ public class FilesServiceImpl extends ServiceImpl<FilesMapper, Files> implements
     public Boolean deleteFile(String fileId, String dir) {
         //创建查询对象,填入查询条件
         QueryWrapper<Files> fileQueryWrapper = new QueryWrapper<>();
-        fileQueryWrapper.select("fileUrl").eq("fileId", fileId);
+        fileQueryWrapper.select("file_url").eq("file_id", fileId);
         //获取查询出来的fileUrl,截取后半截字符串
         Files file = filesMapper.selectOne(fileQueryWrapper);
         String fileUrl = file.getFileUrl();
@@ -76,8 +80,9 @@ public class FilesServiceImpl extends ServiceImpl<FilesMapper, Files> implements
 
     /**
      * 删除多个文件
+     *
      * @param fileIds 文件编号列表
-     * @param dir 文件所在文件夹
+     * @param dir     文件所在文件夹
      * @return 是否全部删除
      */
     @Transactional

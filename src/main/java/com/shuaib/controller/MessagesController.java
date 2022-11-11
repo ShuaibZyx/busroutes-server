@@ -16,26 +16,26 @@ public class MessagesController {
     /**
      * 用户发送消息
      *
-     * @param messages 消息实体，包含留言信息内容
+     * @param message 消息实体，包含留言信息内容
      * @return 通用返回格式
      */
     @PostMapping("/createUserMessage")
-    public Result createUserMessage(@RequestBody Messages messages) {
-        messagesService.save(messages);
-        return Result.success("用户消息添加成功");
+    public Result createUserMessage(@RequestBody Messages message) {
+        messagesService.save(message);
+        return Result.success("发送消息成功");
     }
 
     /**
      * 管理员发送消息
      *
-     * @param messages 消息实体，包含留言消息内容
+     * @param message 消息实体，包含留言消息内容
      * @return 通用返回格式
      */
     @PostMapping("/createAdminMessage")
-    public Result createAdminMessage(@RequestBody Messages messages) {
-        messages.setSenderRole("admin");
-        messagesService.save(messages);
-        return Result.success("管理员消息添加成功");
+    public Result createAdminMessage(@RequestBody Messages message) {
+        message.setSenderRole("admin");
+        messagesService.save(message);
+        return Result.success("发送消息成功(管理员)");
     }
 
 }

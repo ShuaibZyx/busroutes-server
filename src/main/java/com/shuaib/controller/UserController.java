@@ -112,7 +112,7 @@ public class UserController {
      */
     @GetMapping("/info/{userId}")
     public Result getUserInfoById(@PathVariable("userId") Long userId) {
-        return Result.success(userInfoService.getById(userId));
+        return Result.success(userInfoService.getUserInfoById(userId));
     }
 
     /**

@@ -78,7 +78,4 @@ public class NoticesController {
     public Result getNoticeInfoById(@PathVariable("noticeId") Long noticeId){
         return Result.success(noticesService.getById(noticeId));
     }
-
-
-
 }

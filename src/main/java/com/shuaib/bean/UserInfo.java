@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
@@ -20,6 +21,7 @@ import javax.validation.constraints.Pattern;
 
 /**
  * 用户信息实体(附加信息)
+ *
  * @TableName user_info
  */
 @Data
@@ -60,6 +62,10 @@ public class UserInfo extends Model<UserInfo> implements Serializable {
 
     //用户头像文件编号
     private String avatarFileId;
+
+    //用户头像文件
+    @TableField(exist = false)
+    private Files avatarFile;
 
     //用户信息创建时间
     private Date createTime;
