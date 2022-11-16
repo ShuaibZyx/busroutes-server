@@ -21,6 +21,7 @@ public class MessagesController {
      */
     @PostMapping("/createUserMessage")
     public Result createUserMessage(@RequestBody Messages message) {
+        message.setSenderRole("user");
         messagesService.save(message);
         return Result.success("发送消息成功");
     }

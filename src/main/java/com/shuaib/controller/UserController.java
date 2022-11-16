@@ -3,10 +3,13 @@ package com.shuaib.controller;
 import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.shuaib.bean.Admin;
+import com.shuaib.bean.Files;
 import com.shuaib.common.jwt.JwtConfig;
 import com.shuaib.bean.UserAccount;
 import com.shuaib.bean.UserInfo;
 import com.shuaib.common.Result;
+import com.shuaib.service.FilesService;
 import com.shuaib.service.UserAccountService;
 import com.shuaib.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
 import java.util.UUID;
@@ -28,6 +32,9 @@ public class UserController {
 
     @Autowired
     private UserInfoService userInfoService;
+
+    @Autowired
+    private FilesService filesService;
 
     @Resource
     private JwtConfig jwtConfig;
@@ -79,7 +86,7 @@ public class UserController {
             json.set("token", token);
             json.set("userId", userId);
         }
-        return Result.success(json);
+        return Result.success(200, "登陆成功", json);
     }
 
     /**
@@ -112,6 +119,18 @@ public class UserController {
      */
     @GetMapping("/info/{userId}")
     public Result getUserInfoById(@PathVariable("userId") Long userId) {
+        return Result.success(userInfoService.getUserInfoById(userId));
+    }
+
+    /**
+     * 根据token获取用户信息
+     *
+     * @param token token令牌
+     * @return 通用返回格式
+     */
+    @GetMapping("/info/token/{token}")
+    public Result getUserInfoByToken(@PathVariable("token") String token) {
+        Long userId = Long.valueOf(jwtConfig.getUserIdFromToken(token));
         return Result.success(userInfoService.getUserInfoById(userId));
     }
 
@@ -168,12 +187,13 @@ public class UserController {
     @PostMapping("/modify")
     public Result modifyUser(@RequestBody @Validated UserInfo userInfo) {
         userInfoService.updateById(userInfo);
-        return Result.success("更新用户信息成功");
+        return Result.success("更新信息成功");
     }
 
     /**
      * 修改用户的可用状态
-     * @param userId 用户编号
+     *
+     * @param userId    用户编号
      * @param available 账号是否可用
      * @return 通用返回格式
      */
@@ -232,5 +252,29 @@ public class UserController {
     public Result userAccountExist(@PathVariable("account") String account) {
         boolean isExist = userAccountService.getBaseMapper().exists(new QueryWrapper<UserAccount>().eq("account", account));
         return Result.success(isExist);
+    }
+
+    /**
+     * 用户修改自己的头像
+     *
+     * @param userId 管理员编号
+     * @param file   头像文件
+     * @param dir    文件所属文件夹
+     * @return 通用返回格式
+     */
+    @Transactional
+    @PostMapping("/avatar")
+    public Result uploadUserAvatarFile(Long userId, MultipartFile file, String dir) {
+        Files fileObj = filesService.uploadFile(file, dir);
+        UserInfo userInfo = userInfoService.getById(userId);
+        UpdateWrapper<UserInfo> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.set("avatar_file_id", fileObj.getFileId()).eq("user_id", userId);
+        if (userInfo.getAvatarFileId().equals("")) userInfoService.update(updateWrapper);
+        else {
+            Files originalFile = filesService.getById(userInfo.getAvatarFileId());
+            filesService.deleteFile(originalFile.getFileId(), originalFile.getFolder());
+            userInfoService.update(updateWrapper);
+        }
+        return Result.success("修改头像成功");
     }
 }

@@ -11,7 +11,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.Length;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * 站点信息实体

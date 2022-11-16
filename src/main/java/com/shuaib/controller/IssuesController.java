@@ -55,7 +55,7 @@ public class IssuesController {
     @PostMapping("/create")
     public Result createIssue(@RequestBody @Validated Issues issues) {
         issuesService.save(issues);
-        return Result.success("用户发表消息信息成功");
+        return Result.success("发表留言成功");
     }
 
     /**
@@ -98,6 +98,7 @@ public class IssuesController {
 
     /**
      * 根据编号关闭一个留言
+     *
      * @param issueId 留言编号
      * @return 通用返回格式
      */
@@ -109,4 +110,24 @@ public class IssuesController {
         return Result.success("该留言已关闭");
     }
 
+    /**
+     * 根据用户编号获取该用户创建的留言
+     *
+     * @param userId 用户编号
+     * @return 通用返回格式
+     */
+    @GetMapping("/list/user/{userId}")
+    public Result getIssueListByUserId(@PathVariable("userId") Long userId) {
+        return Result.success(issuesService.getBaseMapper().selectList(new QueryWrapper<Issues>().eq("creater_id", userId).orderByDesc("create_time")));
+    }
+
+    /**
+     * 根据用户编号获取未处理的留言数目
+     * @param userId 用户编号
+     * @return 通用返回格式
+     */
+    @GetMapping("/user/UnCope/{userId}")
+    public Result getUnCopeIssueCount(@PathVariable("userId") Long userId) {
+        return Result.success(issuesService.getBaseMapper().selectCount(new QueryWrapper<Issues>().eq("creater_id", userId).lt("state", 2)));
+    }
 }

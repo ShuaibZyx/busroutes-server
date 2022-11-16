@@ -51,7 +51,6 @@ public interface RoutesMapper extends BaseMapper<Routes> {
                     one = @One(select = "com.shuaib.mapper.BusesMapper.selectById"))
     })
     IPage<Routes> getRouteListPage(Page<Routes> page);
-
 }
 
 

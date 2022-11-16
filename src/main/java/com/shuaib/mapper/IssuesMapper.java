@@ -27,7 +27,7 @@ public interface IssuesMapper extends BaseMapper<Issues> {
     @Results({
             @Result(column = "creater_id", property = "createrId"),
             @Result(column = "creater_id", property = "userInfo", javaType = UserInfo.class,
-                    one = @One(select = "com.shuaib.mapper.UserInfoMapper.selectById")
+                    one = @One(select = "com.shuaib.mapper.UserInfoMapper.getUserInfoById")
             ),
             @Result(column = "issue_id", property = "issueId", id = true),
             @Result(column = "issue_id", property = "messageList", javaType = List.class,

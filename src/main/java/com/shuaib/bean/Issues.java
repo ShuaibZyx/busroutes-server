@@ -13,6 +13,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 
 import javax.validation.Valid;
@@ -46,7 +47,7 @@ public class Issues extends Model<Issues> implements Serializable {
     private Long adminId;
 
     //留言标题
-    @Range(min = 2, max = 100, message = "留言标题应在2~100位")
+    @Length(min = 2, max = 100, message = "留言标题应在2~100位")
     private String title;
 
     //留言具体描述

@@ -16,7 +16,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
 import java.util.List;
 
 @Validated
@@ -34,6 +33,7 @@ public class NoticeReadsController {
 
     /**
      * 发布公告
+     *
      * @param noticeId 公告编号
      * @return 通用返回格式
      */
@@ -55,6 +55,7 @@ public class NoticeReadsController {
 
     /**
      * 用户阅读公告
+     *
      * @param noticeRead 阅读记录对象
      * @return 通用返回格式
      */
@@ -68,6 +69,7 @@ public class NoticeReadsController {
 
     /**
      * 设置某公告为全部已读
+     *
      * @param noticeId 公告编号
      * @return 通用返回格式
      */
@@ -81,6 +83,7 @@ public class NoticeReadsController {
 
     /**
      * 设置某用户的所有公告已读
+     *
      * @param userId 用户编号
      * @return 通用返回格式
      */
@@ -89,11 +92,12 @@ public class NoticeReadsController {
         UpdateWrapper<NoticeReads> updateWrapper = new UpdateWrapper<>();
         updateWrapper.set("state", true).eq("user_id", userId);
         noticeReadsService.update(updateWrapper);
-        return Result.success("该用户全部公告已读");
+        return Result.success("全部公告已读");
     }
 
     /**
      * 获取某公告的总发送用户数和总阅读数
+     *
      * @param noticeId 公告编号
      * @return 通用返回格式
      */
@@ -105,5 +109,17 @@ public class NoticeReadsController {
         jsonObject.put("userCount", userCount);
         jsonObject.put("viewCount", viewCount);
         return Result.success(jsonObject);
+    }
+
+    /**
+     * 根据编号获取某用户未读的公告数目
+     *
+     * @param userId 用户编号
+     * @return 通用返回格式
+     */
+    @GetMapping("/user/UnreadCount/{userId}")
+    public Result userUnreadCount(@PathVariable("userId") Long userId) {
+        Long count = noticeReadsService.getBaseMapper().selectCount(new QueryWrapper<NoticeReads>().eq("user_id", userId).eq("state", 0));
+        return Result.success(count);
     }
 }

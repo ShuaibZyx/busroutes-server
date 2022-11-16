@@ -1,15 +1,22 @@
 package com.shuaib.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.shuaib.bean.RouteNodes;
 import com.shuaib.bean.Routes;
+import com.shuaib.bean.Stations;
 import com.shuaib.common.Result;
+import com.shuaib.service.RouteNodesService;
 import com.shuaib.service.RoutesService;
+import com.shuaib.service.StationsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Validated
 @RestController
@@ -18,6 +25,12 @@ public class RoutesController {
 
     @Autowired
     private RoutesService routesService;
+
+    @Autowired
+    private StationsService stationsService;
+
+    @Autowired
+    private RouteNodesService routeNodesService;
 
     /**
      * 创建一条线路
@@ -119,5 +132,55 @@ public class RoutesController {
         updateWrapper.set("end_sequence", endSequence).eq("route_id", routeId);
         routesService.update(updateWrapper);
         return Result.success("已设置该线路终止次序为" + endSequence);
+    }
+
+    /**
+     * 根据用户所在城市模糊搜索公交线路列表
+     *
+     * @param key      用户输入的关键字
+     * @param cityCode 用户所在城市数字字符串
+     * @return 通用返回格式
+     */
+    @GetMapping("/search/{key}")
+    public Result searchRouteListByKey(@PathVariable("key") String key, @RequestParam String cityCode) {
+        //根据关键词从数据库中查询符合的站点
+        List<Stations> stationList = stationsService.getBaseMapper().selectList(new QueryWrapper<Stations>().select("station_id").eq("city_code", cityCode).like("station_name", key));
+        //将站点集合转为站点编号集合
+        List<Long> stationIdList = stationList.stream().map(Stations::getStationId).collect(Collectors.toList());
+        //根据站点编号集合查询符合的节点列表
+        List<RouteNodes> routeNodeList = routeNodesService.getBaseMapper().selectList(new QueryWrapper<RouteNodes>().select("route_id").in("station_id", stationIdList));
+        //将符合节点列表转为线路编号列表并去重
+        List<Long> routeIdList = routeNodeList.stream().map(RouteNodes::getRouteId).collect(Collectors.toList()).stream().distinct().collect(Collectors.toList());
+        //线路列表对象
+        List<Routes> routeList = new ArrayList<>();
+        //根据线路编号装载线路列表
+        for (Long routeId : routeIdList) routeList.add(routesService.getRouteInfoById(routeId));
+        return Result.success(routeList);
+    }
+
+    /**
+     * 根据起始地址和结束地址查询线路
+     *
+     * @param start    起始地址关键词
+     * @param end      结束地址关键词
+     * @param cityCode 用户所在城市
+     * @return 通用返回格式
+     */
+    @GetMapping("/search/section")
+    public Result searchRouteListSection(String start, String end, String cityCode) {
+        //根据目的地关键词从数据库中查询符合的站点
+        List<Stations> stationList = stationsService.getBaseMapper().selectList(new QueryWrapper<Stations>().select("station_id").eq("city_code", cityCode).like("station_name", end));
+        //将站点集合转为站点编号集合
+        List<Long> stationIdList = stationList.stream().map(Stations::getStationId).collect(Collectors.toList());
+        //根据站点编号集合查询符合的节点列表
+        List<RouteNodes> routeNodeList = routeNodesService.getBaseMapper().selectList(new QueryWrapper<RouteNodes>().select("route_id", "sequence").in("station_id", stationIdList));
+        //将符合的节点列表转为线路编号列表并去重
+        List<Long> routeIdList = routeNodeList.stream().map(RouteNodes::getRouteId).collect(Collectors.toList()).stream().distinct().collect(Collectors.toList());
+        //线路列表对象
+        List<Routes> routeList = new ArrayList<>();
+        //根据线路编号装载线路列表
+        for (Long routeId : routeIdList) routeList.add(routesService.getRouteInfoById(routeId));
+        routeList = routeList.stream().filter((Routes route) -> route.getRouteNodeList().get(route.getStartSequence()).getCurrentStation().getStationName().contains(start)).collect(Collectors.toList());
+        return Result.success(routeList);
     }
 }
