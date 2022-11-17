@@ -26,8 +26,7 @@ public class TokenInterceptor extends HandlerInterceptorAdapter {
         System.out.println("==========>访问url:" + request.getRequestURL());
         System.out.println("==========>请求参数(params):");
         // 地址过滤
-        if (uri.contains("")) return true;
-
+        if (uri.contains("login") || uri.contains("register") || uri.contains("websocket") || uri.contains("error")) return true;
         // Token 验证
         String token = request.getHeader(jwtConfig.getHeader());
         if (StringUtils.isEmpty(token)) {
