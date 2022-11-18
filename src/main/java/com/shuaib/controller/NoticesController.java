@@ -107,7 +107,8 @@ public class NoticesController {
         Notices latestNotice = noticesService.getBaseMapper().selectList(new QueryWrapper<Notices>().eq("state", 1).orderByDesc("update_time")).get(0);
         NoticeReads noticeReads = noticeReadsService.getBaseMapper().selectOne(new QueryWrapper<NoticeReads>().select("state").eq("user_id", userId).eq("notice_id", latestNotice.getNoticeId()));
         jsonObject.put("latestNotice", latestNotice);
-        jsonObject.put("state", noticeReads.getState());
+        if (noticeReads != null) jsonObject.put("state", noticeReads.getState());
+        else jsonObject.put("state", true);
         return Result.success(jsonObject);
     }
 

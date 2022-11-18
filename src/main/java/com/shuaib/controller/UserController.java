@@ -243,12 +243,12 @@ public class UserController {
     }
 
     /**
-     * 判断用户登录账户是否以及存在
+     * 判断用户登录账户是否已经存在
      *
      * @param account 用户输入的登陆账号
      * @return 通用返回格式
      */
-    @GetMapping("/exist/{account}")
+    @GetMapping("/register/exist/{account}")
     public Result userAccountExist(@PathVariable("account") String account) {
         boolean isExist = userAccountService.getBaseMapper().exists(new QueryWrapper<UserAccount>().eq("account", account));
         return Result.success(isExist);
