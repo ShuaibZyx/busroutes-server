@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.shuaib.bean.Stations;
 import org.apache.ibatis.annotations.*;
 
+import java.util.List;
+
 
 /**
  * @author shuai   b
@@ -34,6 +36,7 @@ public interface RouteNodesMapper extends BaseMapper<RouteNodes> {
     })
     RouteNodes getRouteNodeInfoByRouteNodeId(Long routeNodeId);
 
+
     /**
      * 根据RouteId获取一个节点信息(附加节点中站点信息)
      *
@@ -51,8 +54,7 @@ public interface RouteNodesMapper extends BaseMapper<RouteNodes> {
                     one = @One(select = "com.shuaib.mapper.StationsMapper.selectById")
             )
     })
-    RouteNodes getRouteNodeInfoByRouteId(Long routId);
-
+    List<RouteNodes> getRouteNodeListByRouteId(Long routId);
 
 }
 

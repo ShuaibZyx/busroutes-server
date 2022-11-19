@@ -148,6 +148,7 @@ public class RoutesController {
         //将站点集合转为站点编号集合
         List<Long> stationIdList = stationList.stream().map(Stations::getStationId).collect(Collectors.toList());
         //根据站点编号集合查询符合的节点列表
+        if(stationIdList.isEmpty()) return Result.success(null);
         List<RouteNodes> routeNodeList = routeNodesService.getBaseMapper().selectList(new QueryWrapper<RouteNodes>().select("route_id").in("station_id", stationIdList));
         //将符合节点列表转为线路编号列表并去重
         List<Long> routeIdList = routeNodeList.stream().map(RouteNodes::getRouteId).collect(Collectors.toList()).stream().distinct().collect(Collectors.toList());

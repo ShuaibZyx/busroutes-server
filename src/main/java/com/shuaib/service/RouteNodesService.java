@@ -3,6 +3,8 @@ package com.shuaib.service;
 import com.shuaib.bean.RouteNodes;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+
 
 /**
  * @author shuai   b
@@ -12,4 +14,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 public interface RouteNodesService extends IService<RouteNodes> {
 
     RouteNodes getRouteNodeInfoById(Long routeNodeId);
+
+    List<RouteNodes> getRouteNodeListByRouteId(Long routId);
 }

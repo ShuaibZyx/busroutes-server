@@ -3,12 +3,17 @@ package com.shuaib.controller;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.shuaib.bean.RouteNodes;
 import com.shuaib.bean.Stations;
 import com.shuaib.common.Result;
+import com.shuaib.service.RouteNodesService;
 import com.shuaib.service.StationsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Validated
 @RestController
@@ -16,6 +21,9 @@ import org.springframework.web.bind.annotation.*;
 public class StationsController {
     @Autowired
     private StationsService stationsService;
+
+    @Autowired
+    private RouteNodesService routeNodesService;
 
     /**
      * 分页获取站点信息列表
@@ -110,9 +118,13 @@ public class StationsController {
      * @return 通用返回格式
      */
     @GetMapping("/search")
-    public Result getStationList(String stationName, String cityCode) {
+    public Result getStationList(String stationName, String cityCode, Long routeId) {
+        List<RouteNodes> routeNodeList = routeNodesService.getRouteNodeListByRouteId(routeId);
+        List<Long> currentStationIdList = routeNodeList.stream().map(RouteNodes::getStationId).collect(Collectors.toList());
         QueryWrapper<Stations> queryWrapper = new QueryWrapper<>();
         queryWrapper.select("station_id", "station_name").like("station_name", stationName).like("city_code", cityCode.substring(0, 13)).eq("state", 1).orderByDesc("create_time");
-        return Result.success(stationsService.getBaseMapper().selectList(queryWrapper));
+        List<Stations> stationList = stationsService.getBaseMapper().selectList(queryWrapper);
+        stationList.removeIf(station -> currentStationIdList.contains(station.getStationId()));
+        return Result.success(stationList);
     }
 }

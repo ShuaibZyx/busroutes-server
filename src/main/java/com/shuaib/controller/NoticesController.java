@@ -124,10 +124,12 @@ public class NoticesController {
         List<JSONObject> UserNoticeList = new ArrayList<>();
         for (Notices notice : noticeList) {
             JSONObject jsonObject = new JSONObject();
-            NoticeReads noticeReads = noticeReadsService.getBaseMapper().selectOne(new QueryWrapper<NoticeReads>().select("state").eq("user_id", userId).eq("notice_id", notice.getNoticeId()));
-            jsonObject.put("info", notice);
-            jsonObject.put("state", noticeReads.getState());
-            UserNoticeList.add(jsonObject);
+            NoticeReads noticeReads = new NoticeReads().selectOne(new QueryWrapper<NoticeReads>().select("state").eq("user_id", userId).eq("notice_id", notice.getNoticeId()));
+            if (noticeReads != null){
+                jsonObject.put("info", notice);
+                jsonObject.put("state", noticeReads.getState());
+                UserNoticeList.add(jsonObject);
+            }
         }
         return Result.success(UserNoticeList);
     }
